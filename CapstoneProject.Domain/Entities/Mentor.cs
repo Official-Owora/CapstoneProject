@@ -1,6 +1,7 @@
 ﻿using CapstoneProject.Domain.Common;
 using CapstoneProject.Domain.Enums;
-using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations;
 
 namespace CapstoneProject.Domain.Entities
 {
@@ -11,13 +12,15 @@ namespace CapstoneProject.Domain.Entities
         public MentorshipDuration MentorshipDuration { get; set; }
         public bool IsAvaiable { get; set; }  //So mentor can update availability
         public ICollection<CommunicationChannels> communicationChannels;
-
         //Navigational property
         public ICollection<Mentee> mentees { get; set; }
         public ICollection<AppointmentSchedule> AppointmentSchedules { get; set; }
-        [ForeignKey(nameof(User))]
+        [Key]
         public string UserId { get; set; }
         public User User { get; set; }
-        public string Email { get; set; }
+
+        
+ 
+
     }
 }

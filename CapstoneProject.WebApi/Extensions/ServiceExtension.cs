@@ -68,7 +68,7 @@ namespace CapstoneProject.WebApi.Extensions
         {
             services.AddSwaggerGen(opt =>
             {
-                opt.SwaggerDoc("v1", new OpenApiInfo { Title = "ContactBookAPP API", Version = "v1" });
+                opt.SwaggerDoc("v1", new OpenApiInfo { Title = "CapstoneProject API", Version = "v1" });
                 opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,

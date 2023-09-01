@@ -34,7 +34,7 @@ namespace CapstoneProject.Application.Services.Implementations
             _logger.LogInformation($"Successfully created a mentee: {DateTime.Now}");
             _unitOfWork.MenteeRepository.CreateAsync(mentee);
             await _unitOfWork.SaveAsync();
-            _logger.LogInformation($"Successfully saved {mentee.Id}");
+            _logger.LogInformation($"Successfully saved {mentee.UserId}");
             var menteeToReturn = _mapper.Map<MenteeResponseDto>(mentee);
             return StandardResponse<MenteeResponseDto>.Success($"Successfully created a mentee: {mentee.FirstName } {mentee.LastName}", menteeToReturn, 200);
         }
@@ -44,11 +44,11 @@ namespace CapstoneProject.Application.Services.Implementations
             var menteeToReturn = _mapper.Map<IEnumerable<MenteeResponseDto>>(result);
             return StandardResponse<(IEnumerable<MenteeResponseDto>, MetaData)>.Success("Successfully retrieved all mentees", (menteeToReturn, result.MetaData), 200);
         }
-        public async Task<StandardResponse<MenteeResponseDto>> GetMenteeByIdAsync(int id)
+        public async Task<StandardResponse<MenteeResponseDto>> GetMenteeByIdAsync(string id)
         {
             var getMentee = await _unitOfWork.MenteeRepository.GetMenteeByIdAsync(id);
             var menteeToReturn = _mapper.Map<MenteeResponseDto>(getMentee);
-            return StandardResponse<MenteeResponseDto>.Success($"Successfully retrieved a mentee with Id: {getMentee.Id}", menteeToReturn, 200);
+            return StandardResponse<MenteeResponseDto>.Success($"Successfully retrieved a mentee with Id: {getMentee.UserId}", menteeToReturn, 200);
         }
        /* public async Task<StandardResponse<(IEnumerable<MenteeResponseDto>, MetaData)>> GetMenteesByIsMatched(MenteeRequestInputParameter parameter, bool IsMatched)
         {
@@ -63,7 +63,7 @@ namespace CapstoneProject.Application.Services.Implementations
                 }
             }
         }*/
-        public async Task<StandardResponse<MenteeResponseDto>> DeleteMenteeAsync(int id)
+        public async Task<StandardResponse<MenteeResponseDto>> DeleteMenteeAsync(string id)
         {
             _logger.LogInformation($"Checking if the user with the Id {id} exists");
             var menteeToBeDelete = await _unitOfWork.MenteeRepository.GetMenteeByIdAsync(id);
@@ -75,9 +75,9 @@ namespace CapstoneProject.Application.Services.Implementations
             _unitOfWork.MenteeRepository.Delete(menteeToBeDelete);
             await _unitOfWork.SaveAsync();
             var menteeToReturn = _mapper.Map<MenteeResponseDto>(menteeToBeDelete);
-            return StandardResponse<MenteeResponseDto>.Success($"Successfully deleted mentee with Id {menteeToBeDelete.Id}", menteeToReturn, 200);
+            return StandardResponse<MenteeResponseDto>.Success($"Successfully deleted mentee with Id {menteeToBeDelete.UserId}", menteeToReturn, 200);
         }
-        public async Task<StandardResponse<MenteeResponseDto>> UpdateMenteeAsync(int id, MenteeRequestDto menteeRequest)
+        public async Task<StandardResponse<MenteeResponseDto>> UpdateMenteeAsync(string id, MenteeRequestDto menteeRequest)
         {
             var checkMenteeExists = await _unitOfWork.MenteeRepository.GetMenteeByIdAsync(id);
             if(checkMenteeExists == null)
@@ -89,7 +89,7 @@ namespace CapstoneProject.Application.Services.Implementations
             _unitOfWork.MenteeRepository.Update(mentee);
             await _unitOfWork.SaveAsync();
             var menteeUpdated = _mapper.Map<MenteeResponseDto>(mentee);
-            return StandardResponse<MenteeResponseDto>.Success($"Successfully updated a mentee with Id: {mentee.Id}", menteeUpdated, 200);
+            return StandardResponse<MenteeResponseDto>.Success($"Successfully updated a mentee with Id: {mentee.UserId}", menteeUpdated, 200);
         }
     }
 }

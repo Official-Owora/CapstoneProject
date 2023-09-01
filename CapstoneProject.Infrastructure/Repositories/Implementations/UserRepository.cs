@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CapstoneProject.Infrastructure.Repositories.Implementations
 {
-    public class UserRepository : RepositoryBase<User>, IUserRepository
+    internal sealed class UserRepository : RepositoryBase<User>, IUserRepository
     {
         private readonly DbSet<User> _users;
 
@@ -17,10 +17,8 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
         }
         public async Task<PagedList<User>> GetAllUsersAsync(UserRequestInputParameter parameter)
         {
-            var users = await _users.Where(u => u.FirstName.ToLower().Contains(parameter.SearchTerm.ToLower())
-            || u.LastName.ToLower().Contains(parameter.SearchTerm.ToLower())
-            || u.Email.ToLower().Contains(parameter.SearchTerm.ToLower()))
-                .Skip((parameter.PageNumber-1)*parameter.PageSize)
+            var users = await _users.Where(u => u.Email.ToLower().Contains(parameter.SearchTerm.ToLower()))
+                .Skip((parameter.PageNumber - 1) * parameter.PageSize)
                 .Take(parameter.PageSize).ToListAsync();
             var count = await _users.CountAsync();
             return new PagedList<User>(users, count, parameter.PageNumber, parameter.PageSize);

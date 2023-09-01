@@ -34,7 +34,7 @@ namespace CapstoneProject.Application.Services.Implementations
             await _unitOfWork.SaveAsync();
             _logger.LogInformation($"Successfully saved user with Id: {user.Id}");
             var userToReturn = _mapper.Map<UserResponseDto>(user);
-            return StandardResponse<UserResponseDto>.Success($"Successfully created a user: {user.FirstName } {user.LastName}", userToReturn, 201);
+            return StandardResponse<UserResponseDto>.Success($"Successfully created a user", userToReturn, 201);
         }
 
     }

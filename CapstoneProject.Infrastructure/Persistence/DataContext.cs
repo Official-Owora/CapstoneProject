@@ -12,16 +12,11 @@ namespace CapstoneProject.Infrastructure.Persistence
         {
 
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
-            modelBuilder.Entity<Mentee>()
-            .HasOne(b => b.Mentor)
-            .WithMany(a => a.mentees) // Assuming Mentor Entity has a collection navigation property for EntityB
-            .HasForeignKey(b => b.MentorId)
-            .OnDelete(DeleteBehavior.Restrict);
-            
         }
         DbSet<User> users { get; set; }
         DbSet<Mentee> mentors { get; set; }

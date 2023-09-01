@@ -9,9 +9,9 @@ namespace CapstoneProject.Application.Services.Abstractions
     {
         Task<StandardResponse<MenteeResponseDto>> CreateMenteeAsync(MenteeRequestDto menteeRequest);
         Task<StandardResponse<(IEnumerable<MenteeResponseDto>, MetaData)>> GetAllMenteesAsync(MenteeRequestInputParameter parameter);
-        Task<StandardResponse<MenteeResponseDto>> GetMenteeByIdAsync(int id);
+        Task<StandardResponse<MenteeResponseDto>> GetMenteeByIdAsync(string id);
         //Task<StandardResponse<(IEnumerable<MenteeResponseDto>, MetaData)>> GetMenteesByIsMatched(MenteeRequestInputParameter parameter, bool IsMatched);
-        Task<StandardResponse<MenteeResponseDto>> DeleteMenteeAsync(int id);
-        Task<StandardResponse<MenteeResponseDto>> UpdateMenteeAsync(int id, MenteeRequestDto menteeRequest);
+        Task<StandardResponse<MenteeResponseDto>> DeleteMenteeAsync(string id);
+        Task<StandardResponse<MenteeResponseDto>> UpdateMenteeAsync(string id, MenteeRequestDto menteeRequest);
     }
 }

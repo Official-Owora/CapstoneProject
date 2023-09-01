@@ -28,9 +28,9 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
             return new PagedList<Mentee>(mentees, count, parameter.PageNumber, parameter.PageSize);
         }
 
-        public async Task<Mentee> GetMenteeByIdAsync(int id)
+        public async Task<Mentee> GetMenteeByIdAsync(string id)
         {
-            return await _mentees.Where(m => m.Id.Equals(id)).FirstOrDefaultAsync();
+            return await _mentees.Where(m => m.UserId.Equals(id)).FirstOrDefaultAsync();
         }
         public async Task<PagedList<Mentee>> GetMenteeByIsMatched(MenteeRequestInputParameter parameter, bool IsMatched, ProgrammingLanguage programmingLanguage, TechTrack techTrack)
         {

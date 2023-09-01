@@ -26,9 +26,9 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
             var count = await _mentors.CountAsync();
             return new PagedList<Mentor>(mentors, count, parameter.PageNumber, parameter.PageSize);
         }
-        public async Task<Mentor> GetMentorByIdAsync(int id)
+        public async Task<Mentor> GetMentorByIdAsync(string id)
         {
-            return await _mentors.Where(m => m.Id.Equals(id)).FirstOrDefaultAsync();
+            return await _mentors.Where(m => m.UserId.Equals(id)).FirstOrDefaultAsync();
         }
         public async Task<PagedList<Mentor>> GetMentorByIsAvailableAsync(MentorRequestInputParemeter parameter, bool isAvailable)
         {

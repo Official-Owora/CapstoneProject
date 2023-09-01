@@ -1,5 +1,6 @@
 ﻿using CapstoneProject.Domain.Common;
-using CapstoneProject.Domain.Enums;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CapstoneProject.Domain.Entities
@@ -7,13 +8,11 @@ namespace CapstoneProject.Domain.Entities
     public class Mentee : BaseEntity
     {
         public bool IsMatched { get; set; }
-        //Navigational Property
-        [ForeignKey(nameof(Mentor))]
-        public int MentorId { get; set; }
-        public Mentor Mentor { get; set; }
-        [ForeignKey(nameof(User))]
+        [Key]
         public string UserId { get; set; }
         public User User { get; set; }
-
+        [ForeignKey(nameof(Mentor))]
+        public string MentorId { get; set; }
+        public Mentor Mentor { get; set; }       
     }
 }

@@ -9,6 +9,5 @@ namespace CapstoneProject.Infrastructure.Repositories.Abstractions
         Task<PagedList<User>> GetAllUsersAsync(UserRequestInputParameter parameter);
         Task<User> GetUserByIdAsync(string id);
         Task<User> GetUserByEmailAsync(string email);
-        Task<User> DeleteAsync(string id);
     }
 }

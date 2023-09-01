@@ -47,13 +47,13 @@ namespace CapstoneProject.Application.Services.Implementations
             var mentorToReturn = _mapper.Map<IEnumerable<MentorResponseDto>>(result);
             return StandardResponse<(IEnumerable<MentorResponseDto>, MetaData)>.Success("All Mentors successfully retrieved", (mentorToReturn, result.MetaData), 200);
         }
-        public async Task<StandardResponse<MentorResponseDto>> GetMentorByIdAsync(int id)
+        public async Task<StandardResponse<MentorResponseDto>> GetMentorByIdAsync(string id)
         {
             var getMentorById = await _unitOfWork.MentorRepository.GetMentorByIdAsync(id);
             var mentorToReturn = _mapper.Map<MentorResponseDto>(getMentorById);
-            return StandardResponse<MentorResponseDto>.Success($"Successfully retrieved a mentor with {getMentorById.Id} Id", mentorToReturn, 200);
+            return StandardResponse<MentorResponseDto>.Success($"Successfully retrieved a mentor with {getMentorById.UserId} Id", mentorToReturn, 200);
         }
-        public async Task<StandardResponse<(IEnumerable<MentorResponseDto>, MetaData)>> GetMentorByIsAvailableAsync(MentorRequestInputParemeter paremeter, bool isAvailable)
+        /*public async Task<StandardResponse<(IEnumerable<MentorResponseDto>, MetaData)>> GetMentorByIsAvailableAsync(MentorRequestInputParemeter paremeter, bool isAvailable)
         {
             //Get all the available mentors
             var getByIsAvailable = await _unitOfWork.MentorRepository.GetMentorByIsAvailableAsync(paremeter, isAvailable);
@@ -66,7 +66,7 @@ namespace CapstoneProject.Application.Services.Implementations
                 foreach (var mentor in getByIsAvailable)
                 {
                     //Trying to find a matching mentee based on common parameters
-                    /*var matchingMentee = await _unitOfWork.MenteeRepository.GetMenteeByIsMatched(mentor.Id, mentor.IsAvaiable, mentor.ProgrammingLanguage, mentor.TechTrack);
+                    *//*var matchingMentee = await _unitOfWork.MenteeRepository.GetMenteeByIsMatched(mentor.Id, mentor.IsAvaiable, mentor.ProgrammingLanguage, mentor.TechTrack);
                     if (matchingMentee == null)
                     {
                         _logger.LogError("Mentee is null");
@@ -82,7 +82,7 @@ namespace CapstoneProject.Application.Services.Implementations
                     _unitOfWork.MentorRepository.Update(mentor);
                     _unitOfWork.MenteeRepository.Update(matchingMentee);
                     //Add matched mentor to the list
-                    matchedMentors.Add(_mapper.Map<MentorResponseDto>(mentor));*/
+                    matchedMentors.Add(_mapper.Map<MentorResponseDto>(mentor));*//*
                 }
                 if (matchedMentors.Count > 0)
                 {
@@ -97,8 +97,8 @@ namespace CapstoneProject.Application.Services.Implementations
             }
             return StandardResponse<(IEnumerable<MentorResponseDto>, MetaData)>.Success("Mentors are not available for matching.", (null, null));
 
-        }
-        public async Task<StandardResponse<MentorResponseDto>> DeleteMentorAsync(int id)
+        }*/
+        public async Task<StandardResponse<MentorResponseDto>> DeleteMentorAsync(string id)
         {
             _logger.LogInformation($"Checking if the user with Id {id} exists");
             var mentorTobeDeleted = await _unitOfWork.MentorRepository.GetMentorByIdAsync(id);
@@ -110,9 +110,9 @@ namespace CapstoneProject.Application.Services.Implementations
             _unitOfWork.MentorRepository.Delete(mentorTobeDeleted);
             await _unitOfWork.SaveAsync();
             var mentorToReturn = _mapper.Map<MentorResponseDto>(mentorTobeDeleted);
-            return StandardResponse<MentorResponseDto>.Success($"Successfully deleted a mentor with Id: {mentorTobeDeleted.Id}", mentorToReturn, 200);
+            return StandardResponse<MentorResponseDto>.Success($"Successfully deleted a mentor with Id: {mentorTobeDeleted.UserId}", mentorToReturn, 200);
         }
-        public async Task<StandardResponse<MentorResponseDto>> UpdateMentorAsync(int id, MentorRequestDto mentorRequest)
+        public async Task<StandardResponse<MentorResponseDto>> UpdateMentorAsync(string id, MentorRequestDto mentorRequest)
         {
             var checkMentorExists = await _unitOfWork.MentorRepository.GetMentorByIdAsync(id);
             if (checkMentorExists == null)
@@ -124,7 +124,7 @@ namespace CapstoneProject.Application.Services.Implementations
             _unitOfWork.MentorRepository.Update(mentor);
             await _unitOfWork.SaveAsync();
             var mentorUpdated = _mapper.Map<MentorResponseDto>(mentor);
-            return StandardResponse<MentorResponseDto>.Success($"Successfully updated Mentor with Id: {mentor.Id}", mentorUpdated, 200);
+            return StandardResponse<MentorResponseDto>.Success($"Successfully updated Mentor with Id: {mentor.UserId}", mentorUpdated, 200);
         }
     }
     

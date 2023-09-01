@@ -7,7 +7,7 @@ namespace CapstoneProject.Infrastructure.Repositories.Abstractions
     public interface IMentorRepository : IRepositoryBase<Mentor>
     {
         Task<PagedList<Mentor>> GetAllMentorAsync(MentorRequestInputParemeter parameter);
-        Task<Mentor> GetMentorByIdAsync(int id);
+        Task<Mentor> GetMentorByIdAsync(string id);
         Task<PagedList<Mentor>> GetMentorByIsAvailableAsync(MentorRequestInputParemeter parameter, bool isAvailable);
     }
 }

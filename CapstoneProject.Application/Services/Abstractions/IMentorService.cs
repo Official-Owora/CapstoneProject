@@ -9,9 +9,9 @@ namespace CapstoneProject.Application.Services.Abstractions
     {
         Task<StandardResponse<MentorResponseDto>> CreateMentorAsync(MentorRequestDto mentorRequest);
         Task<StandardResponse<(IEnumerable<MentorResponseDto>, MetaData)>> GetAllMentorsAsync(MentorRequestInputParemeter paremeter);
-        Task<StandardResponse<MentorResponseDto>> GetMentorByIdAsync(int id);
-        Task<StandardResponse<(IEnumerable<MentorResponseDto>, MetaData)>> GetMentorByIsAvailableAsync(MentorRequestInputParemeter paremeter, bool isAvailable);
-        Task<StandardResponse<MentorResponseDto>> DeleteMentorAsync(int id);
-        Task<StandardResponse<MentorResponseDto>> UpdateMentorAsync(int id, MentorRequestDto mentorRequest);
+        Task<StandardResponse<MentorResponseDto>> GetMentorByIdAsync(string id);
+        //Task<StandardResponse<(IEnumerable<MentorResponseDto>, MetaData)>> GetMentorByIsAvailableAsync(MentorRequestInputParemeter paremeter, bool isAvailable);
+        Task<StandardResponse<MentorResponseDto>> DeleteMentorAsync(string id);
+        Task<StandardResponse<MentorResponseDto>> UpdateMentorAsync(string id, MentorRequestDto mentorRequest);
     }
 }

@@ -14,6 +14,6 @@ namespace CapstoneProject.Domain.Dtos.RequestDto
         public string Organization { get; set; }
         public MentorshipDuration MentorshipDuration { get; set; }
         public bool IsAvaiable { get; set; }
-        public ICollection<CommunicationChannels> communicationChannels;
+        public ICollection<CommunicationChannels> communicationChannels { get; set; }
     }
 }

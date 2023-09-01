@@ -9,7 +9,6 @@ namespace CapstoneProject.Domain.Dtos.RequestDto
         public string Bio { get; set; }
         public TechTrack TechTrack { get; set; }
         public ProgrammingLanguage MainProgrammingLanguage { get; set; }
-        public string ImageURL { get; set; }
         public bool IsMatched { get; set; }
     }
 }

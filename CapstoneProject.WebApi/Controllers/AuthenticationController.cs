@@ -20,35 +20,12 @@ namespace CapstoneProject.WebApi.Controllers
 
         // POST api/<AuthenticationController>
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterUser([FromBody] UserRequestDto requestDto)
+        public async Task<IActionResult> RegisterUser([FromForm] UserRequestDto requestDto)
         {
             var result = await _authenticationService.RegisterUser(requestDto);
-            if (!result.Succeeded)
-            {
-                foreach (var error in result.Errors)
-                {
-                    ModelState.TryAddModelError(error.Code, error.Description);
-                }
-                return BadRequest(ModelState);
-            }
-            return StatusCode(201);
+            return Ok(result);
         }
         
-        [HttpPost("register-mentor")]
-        public async Task<IActionResult> RegisterAdmin([FromBody] UserRequestDto requestDto)
-        {
-            var result = await _authenticationService.RegisterUser(requestDto);
-            if (!result.Succeeded)
-            {
-                foreach (var error in result.Errors)
-                {
-                    ModelState.TryAddModelError(error.Code, error.Description);
-                }
-                return BadRequest(ModelState);
-            }
-            return StatusCode(201);
-        }
-
         [HttpPost("login")]
         public async Task<IActionResult> LoginUser([FromBody] UserLoginDto requestDto)
         {
