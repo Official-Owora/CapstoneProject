@@ -8,5 +8,6 @@ namespace CapstoneProject.Infrastructure.Repositories.Abstractions
     {
         Task<PagedList<AppointmentSchedule>> GetAllAppointmentScheduleAsync(AppointmentScheduleRequestInputParameter parameter);
         Task<AppointmentSchedule> GetAppointmentScheduleByIdAsync(string id);
+        Task<IEnumerable<AppointmentSchedule>> GetAllSchedulesAsync();
     }
 }

@@ -15,17 +15,26 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
         {
             _mentors = dataContext.Set<Mentor>();
         }
-        public async Task<PagedList<Mentor>> GetAllMentorAsync(MentorRequestInputParemeter parameter)
+        public async Task<PagedList<Mentor>> GetAllMentorsPagedAsync()
         {
-            var mentors = await _mentors.Where(m => m.FirstName.ToLower().Contains(parameter.SearchTerm.ToLower())
-            || m.LastName.ToLower().Contains(parameter.SearchTerm.ToLower())
-            || m.ProgrammingLanguage.ToString().Contains(parameter.SearchTerm.ToLower())
-            || m.TechTrack.ToString().Contains(parameter.SearchTerm.ToLower()))
+            var parameter = new MentorRequestInputParemeter();
+            var mentors = await _mentors
+                .OrderBy(x => x.UserId)
+                .Where(m =>
+                m.FirstName.ToLower().Contains(parameter.SearchTerm.ToLower()) ||
+                m.LastName.ToLower().Contains(parameter.SearchTerm.ToLower()))
                 .Skip((parameter.PageNumber - 1) * parameter.PageSize)
                 .Take(parameter.PageSize).ToListAsync();
             var count = await _mentors.CountAsync();
             return new PagedList<Mentor>(mentors, count, parameter.PageNumber, parameter.PageSize);
         }
+        public async Task<IEnumerable<Mentor>> GetAllMentorsAsync()
+        {
+            var mentor = await _mentors.OrderBy(x => x.UserId).ToListAsync();
+            return mentor;
+        }
+
+           
         public async Task<Mentor> GetMentorByIdAsync(string id)
         {
             return await _mentors.Where(m => m.UserId.Equals(id)).FirstOrDefaultAsync();

@@ -22,12 +22,16 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
                  .Take(parameter.PageSize).ToListAsync();
              var count = await _schedules.CountAsync();
              return new PagedList<AppointmentSchedule>(schedules, count, parameter.PageNumber, parameter.PageSize);
-         }
-         public async Task<AppointmentSchedule> GetAppointmentScheduleByIdAsync(string id)
-         {
+        }
+        
+        public async Task<AppointmentSchedule> GetAppointmentScheduleByIdAsync(string id)
+        {
              return await _schedules.Where(a => a.Id.Equals(id)).FirstOrDefaultAsync();
-         }
-
-     
+        }
+        public async Task<IEnumerable<AppointmentSchedule>> GetAllSchedulesAsync()
+        {
+            var appointment = await _schedules.OrderBy(x => x.Id).ToListAsync();
+            return appointment;
+        }
     }
 }

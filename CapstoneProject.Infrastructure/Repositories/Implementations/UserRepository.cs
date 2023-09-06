@@ -23,17 +23,16 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
             var count = await _users.CountAsync();
             return new PagedList<User>(users, count, parameter.PageNumber, parameter.PageSize);
         }
+
         public async Task<User> GetUserByIdAsync(string id)
         {
-            return await _users.Where(u => u.Id.Equals(id)).FirstOrDefaultAsync();
+           return await _users.Where(u => u.Id.Equals(id)).FirstOrDefaultAsync();
         }
+
         public async Task<User> GetUserByEmailAsync(string email)
         {
             return await _users.Where(u => u.Email.Contains(email, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefaultAsync();
         }
-        public async Task<User> DeleteAsync(string id)
-        {
-            return await _users.FindAsync(id);
-        }
+        
     }
 }

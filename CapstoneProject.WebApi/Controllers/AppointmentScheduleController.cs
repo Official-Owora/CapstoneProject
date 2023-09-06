@@ -23,13 +23,13 @@ namespace CapstoneProject.WebApi.Controllers
             var result = await _appointmentScheduleService.CreateAppointmentScheduleAsync(appointmentScheduleRequest);
             return Ok(result);
         }
-        /*[HttpGet]
-        public async Task<IActionResult> GetAllAppointmentScheduleAsync([FromBody] AppointmentScheduleRequestInputParameter parameter)
+        [HttpGet]
+        public async Task<IActionResult> GetAllAppointmentSchedulesAsync()
         {
-            var result = await _appointmentScheduleService.GetAllAppointmentScheduleAsync(parameter);
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.Data.Item1));
-            return Ok(result.Data.Item2);
+            var result = await _appointmentScheduleService.GetAllSchedulesAsync();
+            return Ok(result);
         }
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAppointmentScheduleAsync(string id)
         {
@@ -47,7 +47,7 @@ namespace CapstoneProject.WebApi.Controllers
         {
             var result = await _appointmentScheduleService.UpdateAppointmentScheduleAsync(id, appointmentScheduleRequest);
             return Ok(result);
-        }*/
+        }
     }
    
 }

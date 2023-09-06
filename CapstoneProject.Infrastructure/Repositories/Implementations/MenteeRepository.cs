@@ -16,16 +16,35 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
         {
             _mentees = dataContext.Set<Mentee>();
         }
-        public async Task<PagedList<Mentee>> GetAllMenteeAsync(MenteeRequestInputParameter parameter)
+        public async Task<PagedList<Mentee>> GetAllMenteeAsync()
         {
-            var mentees = await _mentees.Where(m => m.FirstName.ToLower().Contains(parameter.SearchTerm.ToLower())
-            || m.LastName.ToLower().Contains(parameter.SearchTerm.ToLower())
-            || m.ProgrammingLanguage.ToString().Contains(parameter.SearchTerm.ToLower())
-            || m.TechTrack.ToString().Contains(parameter.SearchTerm.ToLower()))
+            /*var parameter = new MenteeRequestInputParameter();
+            var mentee = await _mentees
+                .AsEnumerable()
+                .Where(m => m.FirstName.ToLower().Contains(parameter.SearchTerm.ToLower()) ||
+                m.LastName.ToLower().Contains(parameter.SearchTerm.ToLower()) ||
+                m.TechTrack.ToString().ToLower().Contains(parameter.SearchTerm.ToLower()) ||
+                m.ProgrammingLanguage.ToString().ToLower().Contains(parameter.SearchTerm.ToLower()))
+                .ToList()
+            *//*var mentees = await _mentees.Where(m => m.FirstName.ToLower().Contains(parameter.SearchTerm.ToLower())
+            || m.LastName.ToLower().Contains(parameter.SearchTerm.ToLower()))*//*
                 .Skip((parameter.PageNumber - 1) * parameter.PageSize)
                 .Take(parameter.PageSize).ToListAsync();
             var count = await _mentees.CountAsync();
-            return new PagedList<Mentee>(mentees, count, parameter.PageNumber, parameter.PageSize);
+            return new PagedList<Mentee>(mentee, count, parameter.PageNumber, parameter.PageSize);*/
+            var parameter = new MenteeRequestInputParameter();
+            var searchTerm = parameter.SearchTerm.ToLower();
+
+            var mentee = await _mentees
+                .Where(m => m.FirstName.ToLower().Contains(searchTerm)
+                    || m.LastName.ToLower().Contains(searchTerm))
+                .Skip((parameter.PageNumber - 1) * parameter.PageSize)
+                .Take(parameter.PageSize)
+                .ToListAsync();
+
+            var count = await _mentees.CountAsync();
+
+            return new PagedList<Mentee>(mentee, count, parameter.PageNumber, parameter.PageSize);
         }
 
         public async Task<Mentee> GetMenteeByIdAsync(string id)

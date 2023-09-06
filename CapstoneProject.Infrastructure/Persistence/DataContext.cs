@@ -17,6 +17,10 @@ namespace CapstoneProject.Infrastructure.Persistence
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
+            modelBuilder.Entity<Mentee>()
+                .HasOne(m=>m.Mentor)
+                .WithMany(m=>m.mentees)
+                .OnDelete(DeleteBehavior.NoAction);
         }
         DbSet<User> users { get; set; }
         DbSet<Mentee> mentors { get; set; }

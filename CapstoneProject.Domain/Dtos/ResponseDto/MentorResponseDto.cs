@@ -4,8 +4,8 @@ namespace CapstoneProject.Domain.Dtos.ResponseDto
 {
     public class MentorResponseDto
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        //public string FirstName { get; set; }
+       // public string LastName { get; set; }
         public string Bio { get; set; }
         public TechTrack TechTrack { get; set; }
         public ProgrammingLanguage MainProgrammingLanguage { get; set; }
@@ -14,6 +14,6 @@ namespace CapstoneProject.Domain.Dtos.ResponseDto
         public string Organization { get; set; }
         public MentorshipDuration MentorshipDuration { get; set; }
         public bool IsAvaiable { get; set; }
-        public ICollection<CommunicationChannels> communicationChannels;
+        public string CommunicationChannels { get; set; }
     }
 }

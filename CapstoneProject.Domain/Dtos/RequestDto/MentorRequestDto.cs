@@ -4,6 +4,7 @@ namespace CapstoneProject.Domain.Dtos.RequestDto
 {
     public class MentorRequestDto
     {
+        public string UserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Bio { get; set; }
@@ -14,6 +15,6 @@ namespace CapstoneProject.Domain.Dtos.RequestDto
         public string Organization { get; set; }
         public MentorshipDuration MentorshipDuration { get; set; }
         public bool IsAvaiable { get; set; }
-        public ICollection<CommunicationChannels> communicationChannels { get; set; }
+        public string CommunicationChannels { get; set; }
     }
 }

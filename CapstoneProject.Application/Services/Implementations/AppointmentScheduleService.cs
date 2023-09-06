@@ -38,18 +38,21 @@ namespace CapstoneProject.Application.Services.Implementations
             var scheduleToReturn = _mapper.Map<AppointmentScheduleResponseDto>(appointmentSchedule);
             return StandardResponse<AppointmentScheduleResponseDto>.Success($"Successfully created an appointment Schedule: {appointmentSchedule.Id}", scheduleToReturn, 200);
         }
-        public async Task<StandardResponse<(IEnumerable<AppointmentScheduleResponseDto>, MetaData)>> GetAllAppointmentScheduleAsync(AppointmentScheduleRequestInputParameter parameter)
+        
+        public async Task<StandardResponse<IEnumerable<AppointmentScheduleResponseDto>>> GetAllSchedulesAsync()
         {
-            var result = await _unitOfWork.AppointmentScheduleRepository.GetAllAppointmentScheduleAsync(parameter);
-            var scheduleToReturn = _mapper.Map<IEnumerable<AppointmentScheduleResponseDto>>(result);
-            return StandardResponse<(IEnumerable<AppointmentScheduleResponseDto>, MetaData)>.Success($"All Appointment Schedules successfully retrieved", (scheduleToReturn, result.MetaData), 200);
+            var schedule = await _unitOfWork.AppointmentScheduleRepository.GetAllSchedulesAsync();
+            var scheduleToReturn = _mapper.Map<IEnumerable<AppointmentScheduleResponseDto>>(schedule);
+            return StandardResponse<IEnumerable<AppointmentScheduleResponseDto>>.Success($"All appointment schedules successfully retrieved", scheduleToReturn, 200);
         }
+
         public async Task<StandardResponse<AppointmentScheduleResponseDto>> GetAppointmentScheduleByIdAsync(string id)
         {
             var getSchedule = _unitOfWork.AppointmentScheduleRepository.GetAppointmentScheduleByIdAsync(id);
             var scheduleToReturn = _mapper.Map<AppointmentScheduleResponseDto>(getSchedule);
             return StandardResponse<AppointmentScheduleResponseDto>.Success($"Successfully retrieved appointment schedule with Id: {getSchedule.Id}",scheduleToReturn, 200);
         }
+
         public async Task<StandardResponse<AppointmentScheduleResponseDto>> DeleteAppointmentScheduleAsync(string id)
         {
             _logger.LogInformation($"Checking if the appointment schedule with Id {id} exists");
@@ -64,6 +67,7 @@ namespace CapstoneProject.Application.Services.Implementations
             var scheduleToReturn = _mapper.Map<AppointmentScheduleResponseDto>(getSchedule);
             return StandardResponse<AppointmentScheduleResponseDto>.Success($"Successfully deleted an appointment Schedule with Id: {getSchedule.Id}", scheduleToReturn, 200);
         }
+
         public async Task<StandardResponse<AppointmentScheduleResponseDto>> UpdateAppointmentScheduleAsync(string id, AppointmentScheduleRequestDto appointmentScheduleRequest)
         {
             _logger.LogInformation($"Checking if the appointment schedule with Id: {id} exists");

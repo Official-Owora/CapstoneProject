@@ -1,5 +1,8 @@
 using CapstoneProject.Application.Common;
+using CapstoneProject.Infrastructure.Persistence;
 using CapstoneProject.WebApi.Extensions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,9 +16,14 @@ builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
 // Add services to the container.
+builder.Services.AddDbContext<DataContext>(Options =>
+{
+    Options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
+    Options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+});
 builder.Services.AddAutoMapper(typeof(MapInitializers));
 builder.Services.ResolvingDependencyInjection();
-builder.Services.ConfigureDatabaseContext(builder.Configuration);
+//builder.Services.ConfigureDatabaseContext(builder.Configuration);
 builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureJWT(builder.Configuration);

@@ -3,9 +3,12 @@ using CapstoneProject.Application.Services.Abstractions;
 using CapstoneProject.Domain.Dtos.RequestDto;
 using CapstoneProject.Domain.Dtos.ResponseDto;
 using CapstoneProject.Domain.Entities;
+using CapstoneProject.Domain.Enums;
 using CapstoneProject.Infrastructure.RepositoryManager;
 using CapstoneProject.Shared.RequestParameter.Common;
 using CapstoneProject.Shared.RequestParameter.ModelParameters;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Security.AccessControl;
 
@@ -16,12 +19,14 @@ namespace CapstoneProject.Application.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<MentorService> _logger;
         private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
 
-        public MentorService(IUnitOfWork unitOfWork, ILogger<MentorService> logger, IMapper mapper)
+        public MentorService(IUnitOfWork unitOfWork, ILogger<MentorService> logger, IMapper mapper, UserManager<User> userManager)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
+            _userManager = userManager;
         }
         public async Task<StandardResponse<MentorResponseDto>> CreateMentorAsync(MentorRequestDto mentorRequest)
         {
@@ -41,12 +46,16 @@ namespace CapstoneProject.Application.Services.Implementations
             var mentorToReturn = _mapper.Map<MentorResponseDto>(mentor);
             return StandardResponse<MentorResponseDto>.Success($"Successfully created a Mentor: {mentorRequest.FirstName} {mentorRequest.LastName}", mentorToReturn, 200);
         }
-        public async Task<StandardResponse<(IEnumerable<MentorResponseDto>, MetaData)>> GetAllMentorsAsync(MentorRequestInputParemeter paremeter)
+        
+        public async Task<StandardResponse<IEnumerable<MentorResponseDto>>> GetAllMentorsAsync()
         {
-            var result = await _unitOfWork.MentorRepository.GetAllMentorAsync(paremeter);
-            var mentorToReturn = _mapper.Map<IEnumerable<MentorResponseDto>>(result);
-            return StandardResponse<(IEnumerable<MentorResponseDto>, MetaData)>.Success("All Mentors successfully retrieved", (mentorToReturn, result.MetaData), 200);
+            _logger.LogInformation("Attempting to get list of users from database.");
+            var users = await _unitOfWork.MentorRepository.GetAllMentorsAsync();
+            var mapUsers = _mapper.Map<IEnumerable<MentorResponseDto>>(users);
+            _logger.LogInformation("Returning list of users.");
+            return StandardResponse<IEnumerable<MentorResponseDto>>.Success("successful",mapUsers,200);
         }
+       
         public async Task<StandardResponse<MentorResponseDto>> GetMentorByIdAsync(string id)
         {
             var getMentorById = await _unitOfWork.MentorRepository.GetMentorByIdAsync(id);
@@ -114,18 +123,42 @@ namespace CapstoneProject.Application.Services.Implementations
         }
         public async Task<StandardResponse<MentorResponseDto>> UpdateMentorAsync(string id, MentorRequestDto mentorRequest)
         {
+            var user = await _userManager.FindByIdAsync(id);
+            
+            if(user == null)
+            {
+                _logger.LogError("User does not exist");
+                return StandardResponse<MentorResponseDto>.Failed("User does not exist");
+            }
+            if (!await _userManager.IsInRoleAsync(user, Roles.Mentor.ToString() ))
+            {
+                _logger.LogError("User is not authorized to update a mentor profile");
+                return StandardResponse<MentorResponseDto>.Failed("User is not authorized to update a mentor profile");
+            }
             var checkMentorExists = await _unitOfWork.MentorRepository.GetMentorByIdAsync(id);
             if (checkMentorExists == null)
             {
                 _logger.LogError("Mentor does not exist");
                 return StandardResponse<MentorResponseDto>.Failed("Mentor does not exist");
             }
+            
             var mentor = _mapper.Map<Mentor>(mentorRequest);
             _unitOfWork.MentorRepository.Update(mentor);
             await _unitOfWork.SaveAsync();
             var mentorUpdated = _mapper.Map<MentorResponseDto>(mentor);
             return StandardResponse<MentorResponseDto>.Success($"Successfully updated Mentor with Id: {mentor.UserId}", mentorUpdated, 200);
         }
+
+        //Endpoints to be created 
+
+        //GetAvailableMentee     --->OrderByAscending
+        //CreateAppointment Schedule
+        //PairMentorWithMentee   ---->
+        //Deactivate Account
+        
+
+
+
     }
     
 }

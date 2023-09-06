@@ -22,7 +22,6 @@ namespace CapstoneProject.WebApi.Extensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
-            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMenteeService, MenteeService>();
             services.AddScoped<IMentorService, MentorService>();
             services.AddScoped<IAppointmentScheduleService, AppointmentScheduleService>();

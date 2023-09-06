@@ -7,6 +7,7 @@ using CapstoneProject.Infrastructure.RepositoryManager;
 using CapstoneProject.Shared.RequestParameter.Common;
 using CapstoneProject.Shared.RequestParameter.ModelParameters;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.Metrics;
 
 namespace CapstoneProject.Application.Services.Implementations
 {
@@ -24,23 +25,31 @@ namespace CapstoneProject.Application.Services.Implementations
         }
         public async Task<StandardResponse<MenteeResponseDto>> CreateMenteeAsync(MenteeRequestDto menteeRequest)
         {
-            if (menteeRequest == null)
+            try
             {
-                _logger.LogError("Mentee details cannot be null");
-                return StandardResponse<MenteeResponseDto>.Failed("Mentee request is nul");
+                if (menteeRequest == null)
+                {
+                    _logger.LogError("Mentee details cannot be null");
+                    return StandardResponse<MenteeResponseDto>.Failed("Mentee request is nul");
+                }
+                _logger.LogInformation($"Trying to create a mentee : {DateTime.Now}");
+                var mentee = _mapper.Map<Mentee>(menteeRequest);
+                _logger.LogInformation($"Successfully created a mentee: {DateTime.Now}");
+                await _unitOfWork.MenteeRepository.CreateAsync(mentee);
+                await _unitOfWork.SaveAsync();
+                _logger.LogInformation($"Successfully saved {mentee.UserId}");
+                var menteeToReturn = _mapper.Map<MenteeResponseDto>(mentee);
+                return StandardResponse<MenteeResponseDto>.Success($"Successfully created a mentee: {mentee.FirstName} {mentee.LastName}", menteeToReturn, 200);
             }
-            _logger.LogInformation($"Trying to create a mentee : {DateTime.Now}");
-            var mentee = _mapper.Map<Mentee>(menteeRequest);
-            _logger.LogInformation($"Successfully created a mentee: {DateTime.Now}");
-            _unitOfWork.MenteeRepository.CreateAsync(mentee);
-            await _unitOfWork.SaveAsync();
-            _logger.LogInformation($"Successfully saved {mentee.UserId}");
-            var menteeToReturn = _mapper.Map<MenteeResponseDto>(mentee);
-            return StandardResponse<MenteeResponseDto>.Success($"Successfully created a mentee: {mentee.FirstName } {mentee.LastName}", menteeToReturn, 200);
+            catch (Exception ex)
+            {
+
+                return StandardResponse<MenteeResponseDto>.Failed($"Successfully created a mentee:{ex?.Message ?? ex?.InnerException.Message}");
+            }
         }
-        public async Task<StandardResponse<(IEnumerable<MenteeResponseDto>, MetaData)>> GetAllMenteesAsync(MenteeRequestInputParameter parameter)
-        {
-            var result = await _unitOfWork.MenteeRepository.GetAllMenteeAsync(parameter);
+        public async Task<StandardResponse<(IEnumerable<MenteeResponseDto>, MetaData)>> GetAllMenteesAsync()
+        {            
+            var result = await _unitOfWork.MenteeRepository.GetAllMenteeAsync();
             var menteeToReturn = _mapper.Map<IEnumerable<MenteeResponseDto>>(result);
             return StandardResponse<(IEnumerable<MenteeResponseDto>, MetaData)>.Success("Successfully retrieved all mentees", (menteeToReturn, result.MetaData), 200);
         }

@@ -11,8 +11,9 @@ namespace CapstoneProject.Domain.Entities
         [Key]
         public string UserId { get; set; }
         public User User { get; set; }
-        [ForeignKey(nameof(Mentor))]
-        public string MentorId { get; set; }
-        public Mentor Mentor { get; set; }       
+
+        [ForeignKey("Mentor")]
+        public string MentorId { get; set; }    
+        public Mentor Mentor { get; set; }    
     }
 }

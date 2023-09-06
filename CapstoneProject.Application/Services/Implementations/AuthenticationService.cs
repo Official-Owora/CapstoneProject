@@ -4,6 +4,7 @@ using CapstoneProject.Domain.Dtos.RequestDto;
 using CapstoneProject.Domain.Dtos.ResponseDto;
 using CapstoneProject.Domain.Entities;
 using CapstoneProject.Domain.Enums;
+using CapstoneProject.Infrastructure.Configuration;
 using CapstoneProject.Infrastructure.RepositoryManager;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -24,7 +25,8 @@ namespace CapstoneProject.Application.Services.Implementations
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _config;
         private readonly IUnitOfWork _unitOfWork;
-        private User _user;
+        public User _user;
+
 
         public AuthenticationService(ILogger<AuthenticationService> logger, IMapper mapper, IConfiguration config, UserManager<User> userManager, IUnitOfWork unitOfWork)
         {
@@ -54,33 +56,40 @@ namespace CapstoneProject.Application.Services.Implementations
                 user.UserName = userRequest.Email;
                 var result = await _userManager.CreateAsync(user, userRequest.Password);
 
+
                 if (result.Succeeded)
                 {
                     if (userRequest.Roles == Roles.Mentor)
                     {
 
                         await _userManager.AddToRoleAsync(user, Roles.Mentor.ToString());
+                        var getUser = await _userManager.FindByEmailAsync(userRequest.Email);
                         //create a mentor and save it
                         var createMentor = new Mentor
                         {
+                            UserId = getUser.Id,
                             FirstName = userRequest.FirstName,
                             LastName = userRequest.LastName,
                         };
                         await _unitOfWork.MentorRepository.CreateAsync(createMentor);
-                        _unitOfWork.SaveAsync();
+                        await _unitOfWork.SaveAsync();
 
                     }
                     else
                     {
                         await _userManager.AddToRoleAsync(user, Roles.Mentee.ToString());
+                        var getuser = await _userManager.FindByEmailAsync(userRequest.Email);
+
+
                         //create and a mentee and save
                         var createMentee = new Mentee
                         {
+                            UserId = getuser.Id,                            
                             FirstName = userRequest.FirstName,
                             LastName = userRequest.LastName,
                         };
                         await _unitOfWork.MenteeRepository.CreateAsync(createMentee);
-                        _unitOfWork.SaveAsync();
+                        await _unitOfWork.SaveAsync();
                     }
 
                 }
@@ -103,11 +112,12 @@ namespace CapstoneProject.Application.Services.Implementations
 
         public async Task<bool> ValidateUser(UserLoginDto userForAuth)
         {
-            _user = await _userManager.FindByEmailAsync(userForAuth.Email);
+            var user = await _userManager.FindByEmailAsync(userForAuth.Email);
             var result = (_user != null && await _userManager.CheckPasswordAsync(_user, userForAuth.Password));
             if (!result)
                 _logger.LogWarning($"{nameof(ValidateUser)}: Authentication failed. Wrong username of password");
             return result;
+
         }
         public async Task<string> CreateToken()
         {
