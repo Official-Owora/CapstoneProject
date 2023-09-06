@@ -7,7 +7,6 @@ namespace CapstoneProject.Application.Services.Abstractions
 {
     public interface IUserService
     {
-        Task<StandardResponse<UserResponseDto>> CreateUserAsync(UserRequestDto userRequest);
         Task<StandardResponse<(IEnumerable<UserResponseDto>, MetaData)>> GetAllUserAsync(UserRequestInputParameter parameter);
         Task<StandardResponse<UserResponseDto>> GetUserById(string Id);
         Task<StandardResponse<UserResponseDto>> GetUserByEmail(string email);

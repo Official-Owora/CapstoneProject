@@ -4,14 +4,11 @@ using CapstoneProject.Domain.Dtos.RequestDto;
 using CapstoneProject.Domain.Dtos.ResponseDto;
 using CapstoneProject.Domain.Entities;
 using CapstoneProject.Domain.Enums;
-using CapstoneProject.Infrastructure.Configuration;
 using CapstoneProject.Infrastructure.RepositoryManager;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -59,10 +56,10 @@ namespace CapstoneProject.Application.Services.Implementations
 
                 if (result.Succeeded)
                 {
-                    if (userRequest.Roles == Roles.Mentor)
+                    if (userRequest.Roles == UserType.Mentor)
                     {
 
-                        await _userManager.AddToRoleAsync(user, Roles.Mentor.ToString());
+                        await _userManager.AddToRoleAsync(user, UserType.Mentor.ToString());
                         var getUser = await _userManager.FindByEmailAsync(userRequest.Email);
                         //create a mentor and save it
                         var createMentor = new Mentor
@@ -77,7 +74,7 @@ namespace CapstoneProject.Application.Services.Implementations
                     }
                     else
                     {
-                        await _userManager.AddToRoleAsync(user, Roles.Mentee.ToString());
+                        await _userManager.AddToRoleAsync(user, UserType.Mentee.ToString());
                         var getuser = await _userManager.FindByEmailAsync(userRequest.Email);
 
 
@@ -115,7 +112,7 @@ namespace CapstoneProject.Application.Services.Implementations
             var user = await _userManager.FindByEmailAsync(userForAuth.Email);
             var result = (_user != null && await _userManager.CheckPasswordAsync(_user, userForAuth.Password));
             if (!result)
-                _logger.LogWarning($"{nameof(ValidateUser)}: Authentication failed. Wrong username of password");
+                _logger.LogWarning($"{nameof(ValidateUser)}: Authentication failed. Wrong username or password");
             return result;
 
         }

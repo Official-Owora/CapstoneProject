@@ -1,6 +1,6 @@
 ﻿namespace CapstoneProject.Domain.Enums
 {
-    public enum Roles
+    public enum UserType
     {
         Mentor,
         Mentee

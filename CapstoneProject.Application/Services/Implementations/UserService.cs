@@ -22,22 +22,7 @@ namespace CapstoneProject.Application.Services.Implementations
             _logger = logger;
             _mapper = mapper;
         }
-        public async Task<StandardResponse<UserResponseDto>> CreateUserAsync(UserRequestDto userRequest)
-        {
-            if (userRequest == null)
-            {
-                _logger.LogError("User details cannot be found");
-                return StandardResponse<UserResponseDto>.Failed($"User request is null");
-            }
-            _logger.LogInformation($"Attempting to create a user: {DateTime.Now}");
-            var user = _mapper.Map<User>(userRequest);
-            _logger.LogInformation($"User Successfully created: {DateTime.Now}");
-            _unitOfWork.UserRepository.CreateAsync(user);
-            await _unitOfWork.SaveAsync();
-            _logger.LogInformation($"Successfully saved user with Id: {user.Id}");
-            var userToReturn = _mapper.Map<UserResponseDto>(user);
-            return StandardResponse<UserResponseDto>.Success($"Successfully created a user", userToReturn, 201);
-        }
+        
         public async Task<StandardResponse<(IEnumerable<UserResponseDto>, MetaData)>> GetAllUserAsync(UserRequestInputParameter parameter)
         {
             var result = await _unitOfWork.UserRepository.GetAllUsersAsync(parameter);
@@ -52,8 +37,13 @@ namespace CapstoneProject.Application.Services.Implementations
         }
         public async Task<StandardResponse<UserResponseDto>> GetUserByEmail(string email)
         {
-            var result = await _unitOfWork.UserRepository.GetUserByEmailAsync(email);
-            var userToReturn = _mapper.Map<UserResponseDto>(result);
+            var user = await _unitOfWork.UserRepository.GetUserByEmailAsync(email);
+            if (user == null)
+            {
+                _logger.LogError("User does not exist");
+                return StandardResponse<UserResponseDto>.Failed("User does not exist");
+            }
+            var userToReturn = _mapper.Map<UserResponseDto>(user);
             return StandardResponse<UserResponseDto>.Success("Successfully retrieved a user", userToReturn);
         }
         public async Task<StandardResponse<UserResponseDto>> UpdateUserAsync(string id, UserRequestDto userRequest)
@@ -73,17 +63,18 @@ namespace CapstoneProject.Application.Services.Implementations
         }
         public async Task<StandardResponse<UserResponseDto>> DeleteUser(string id)
         {
-            var response = new UserResponseDto();
+            //var response = new UserResponseDto();
             _logger.LogInformation($"Checking if the user with Id {id} exists");
-            var getUser = await _unitOfWork.UserRepository.GetUserByIdAsync(id);
-            if (getUser == null)
+            var user = await _unitOfWork.UserRepository.GetUserByIdAsync(id);
+            if (user == null)
             {
                 _logger.LogError("User not found");
                 StandardResponse<UserResponseDto>.Failed("User does not exist");
-            }
-            _unitOfWork.UserRepository.Delete(getUser);
-            _unitOfWork.SaveAsync();
-            return StandardResponse<UserResponseDto>.Success($"User with Id {id}, has been deleted successfully", response);
+            }            
+            _unitOfWork.UserRepository.Delete(user);
+            await _unitOfWork.SaveAsync();
+            var userToReturn = _mapper.Map<UserResponseDto>(user);
+            return StandardResponse<UserResponseDto>.Success($"User with Id {id}, has been deleted successfully", userToReturn, 200);
         }
 
     }

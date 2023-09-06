@@ -39,7 +39,7 @@ namespace CapstoneProject.WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAppointmentScheduleAsync(string id)
         {
-            var result = await _appointmentScheduleService.GetAppointmentScheduleByIdAsync(id);
+            var result = await _appointmentScheduleService.DeleteAppointmentScheduleAsync(id);
             return Ok(result);
         }
         [HttpPut("{id}")]

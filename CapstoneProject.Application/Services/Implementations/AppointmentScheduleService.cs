@@ -4,8 +4,6 @@ using CapstoneProject.Domain.Dtos.RequestDto;
 using CapstoneProject.Domain.Dtos.ResponseDto;
 using CapstoneProject.Domain.Entities;
 using CapstoneProject.Infrastructure.RepositoryManager;
-using CapstoneProject.Shared.RequestParameter.Common;
-using CapstoneProject.Shared.RequestParameter.ModelParameters;
 using Microsoft.Extensions.Logging;
 
 namespace CapstoneProject.Application.Services.Implementations
@@ -48,7 +46,14 @@ namespace CapstoneProject.Application.Services.Implementations
 
         public async Task<StandardResponse<AppointmentScheduleResponseDto>> GetAppointmentScheduleByIdAsync(string id)
         {
-            var getSchedule = _unitOfWork.AppointmentScheduleRepository.GetAppointmentScheduleByIdAsync(id);
+            var getSchedule = await _unitOfWork.AppointmentScheduleRepository.GetAppointmentScheduleByIdAsync(id);
+            if (getSchedule == null)
+            {
+                _logger.LogError("Appointment Schedule is null");
+                return StandardResponse<AppointmentScheduleResponseDto>.Failed("Appointment schedule does not exist");
+            }
+            await _unitOfWork.AppointmentScheduleRepository.GetAppointmentScheduleByIdAsync(id);
+            await _unitOfWork.SaveAsync();
             var scheduleToReturn = _mapper.Map<AppointmentScheduleResponseDto>(getSchedule);
             return StandardResponse<AppointmentScheduleResponseDto>.Success($"Successfully retrieved appointment schedule with Id: {getSchedule.Id}",scheduleToReturn, 200);
         }

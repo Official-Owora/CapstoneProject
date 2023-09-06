@@ -27,9 +27,9 @@ namespace CapstoneProject.WebApi.Controllers
         }
         
         [HttpPost("login")]
-        public async Task<IActionResult> LoginUser([FromBody] UserLoginDto requestDto)
+        public async Task<IActionResult> LoginUser([FromBody] UserLoginDto userLogin)
         {
-            if (!await _authenticationService.ValidateUser(requestDto))
+            if (!await _authenticationService.ValidateUser(userLogin))
             {
                 return Unauthorized();
             }

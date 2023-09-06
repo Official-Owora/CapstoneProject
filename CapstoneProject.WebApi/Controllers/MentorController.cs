@@ -32,13 +32,20 @@ namespace CapstoneProject.WebApi.Controllers
             var result = await _mentorService.UpdateMentorAsync(id, mentorRequest);
             return Ok(result);
         }
-
+        //GET ALL api/<MentorController>
         [HttpGet]
         public async Task<IActionResult> GetAllMentorsAsync()
         {
             var result = await _mentorService.GetAllMentorsAsync();
             return Ok(result);
         }
+        [HttpGet("ById")]
+        public async Task<IActionResult> GetMentorByIdAsync(string id)
+        {
+            var result = await _mentorService.GetMentorByIdAsync(id);
+            return Ok(result);
+        }
+        //DELETE api/<MentorController>
         [HttpDelete]
         public async Task<IActionResult> DeleteMentorById(string id, MentorRequestDto mentorRequest)
         {

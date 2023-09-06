@@ -16,9 +16,9 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
         {
             _mentees = dataContext.Set<Mentee>();
         }
-        public async Task<PagedList<Mentee>> GetAllMenteeAsync()
+       /* public async Task<PagedList<Mentee>> GetAllMenteeAsync()
         {
-            /*var parameter = new MenteeRequestInputParameter();
+            *//*var parameter = new MenteeRequestInputParameter();
             var mentee = await _mentees
                 .AsEnumerable()
                 .Where(m => m.FirstName.ToLower().Contains(parameter.SearchTerm.ToLower()) ||
@@ -31,7 +31,7 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
                 .Skip((parameter.PageNumber - 1) * parameter.PageSize)
                 .Take(parameter.PageSize).ToListAsync();
             var count = await _mentees.CountAsync();
-            return new PagedList<Mentee>(mentee, count, parameter.PageNumber, parameter.PageSize);*/
+            return new PagedList<Mentee>(mentee, count, parameter.PageNumber, parameter.PageSize);*//*
             var parameter = new MenteeRequestInputParameter();
             var searchTerm = parameter.SearchTerm.ToLower();
 
@@ -45,6 +45,11 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
             var count = await _mentees.CountAsync();
 
             return new PagedList<Mentee>(mentee, count, parameter.PageNumber, parameter.PageSize);
+        }*/
+        public async Task<IEnumerable<Mentee>> GetAllMenteesAsync()
+        {
+            var mentee = await _mentees.OrderBy(x => x.UserId).ToListAsync();
+            return mentee;
         }
 
         public async Task<Mentee> GetMenteeByIdAsync(string id)

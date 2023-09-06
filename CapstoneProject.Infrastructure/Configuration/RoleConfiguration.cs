@@ -12,12 +12,12 @@ namespace CapstoneProject.Infrastructure.Configuration
             builder.HasData(
                 new IdentityRole
                 {
-                    Name = Roles.Mentee.ToString(),
+                    Name = UserType.Mentee.ToString(),
                     NormalizedName = "MENTEE",
                 },
                 new IdentityRole
                 {
-                    Name = Roles.Mentor.ToString(),
+                    Name = UserType.Mentor.ToString(),
                     NormalizedName = "MENTOR",
                 });
         }

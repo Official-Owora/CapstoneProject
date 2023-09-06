@@ -47,15 +47,31 @@ namespace CapstoneProject.Application.Services.Implementations
                 return StandardResponse<MenteeResponseDto>.Failed($"Successfully created a mentee:{ex?.Message ?? ex?.InnerException.Message}");
             }
         }
-        public async Task<StandardResponse<(IEnumerable<MenteeResponseDto>, MetaData)>> GetAllMenteesAsync()
+        /*public async Task<StandardResponse<(IEnumerable<MenteeResponseDto>, MetaData)>> GetAllMenteesAsync()
         {            
             var result = await _unitOfWork.MenteeRepository.GetAllMenteeAsync();
             var menteeToReturn = _mapper.Map<IEnumerable<MenteeResponseDto>>(result);
             return StandardResponse<(IEnumerable<MenteeResponseDto>, MetaData)>.Success("Successfully retrieved all mentees", (menteeToReturn, result.MetaData), 200);
+        }*/
+
+        public async Task<StandardResponse<IEnumerable<MenteeResponseDto>>> GetAllMenteesAsync()
+        {
+            _logger.LogInformation("Attempting to get list of users from database.");
+            var users = await _unitOfWork.MenteeRepository.GetAllMenteesAsync();
+            var mapUsers = _mapper.Map<IEnumerable<MenteeResponseDto>>(users);
+            _logger.LogInformation("Returning list of users.");
+            return StandardResponse<IEnumerable<MenteeResponseDto>>.Success("successful", mapUsers, 200);
         }
         public async Task<StandardResponse<MenteeResponseDto>> GetMenteeByIdAsync(string id)
         {
             var getMentee = await _unitOfWork.MenteeRepository.GetMenteeByIdAsync(id);
+            if (getMentee == null)
+            {
+                _logger.LogError("Mentee does not exist");
+                return StandardResponse<MenteeResponseDto>.Failed($"Mentee with the id:{id} does not exist");
+            }
+            await _unitOfWork.MenteeRepository.GetMenteeByIdAsync(id);
+            await _unitOfWork.SaveAsync();
             var menteeToReturn = _mapper.Map<MenteeResponseDto>(getMentee);
             return StandardResponse<MenteeResponseDto>.Success($"Successfully retrieved a mentee with Id: {getMentee.UserId}", menteeToReturn, 200);
         }

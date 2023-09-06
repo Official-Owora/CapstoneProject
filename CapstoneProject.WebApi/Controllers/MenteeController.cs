@@ -28,8 +28,20 @@ namespace CapstoneProject.WebApi.Controllers
         public async Task<IActionResult> GetAllMenteesAsync()
         {
             var result = await _menteeService.GetAllMenteesAsync();
+            return Ok(result);
+        }
+        [HttpPut]
+        public async Task<IActionResult> UpdateMenteeAsync(string id,[FromBody] MenteeRequestDto menteeRequest)
+        {
+            var result = await _menteeService.UpdateMenteeAsync(id, menteeRequest);
+            return Ok(result);
+        }
+       /* [HttpGet]
+        public async Task<IActionResult> GetAllMenteesAsync()
+        {
+            var result = await _menteeService.GetAllMenteesAsync();
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.Data.Item1));
             return Ok(result.Data.Item2);
-        }
+        }*/
     }
 }

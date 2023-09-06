@@ -59,8 +59,15 @@ namespace CapstoneProject.Application.Services.Implementations
         public async Task<StandardResponse<MentorResponseDto>> GetMentorByIdAsync(string id)
         {
             var getMentorById = await _unitOfWork.MentorRepository.GetMentorByIdAsync(id);
+            if (getMentorById == null)
+            {
+                _logger.LogError("Mentor not found");
+                return StandardResponse<MentorResponseDto>.Failed("Mentor does not exist");
+            }
+            await _unitOfWork.MentorRepository.GetMentorByIdAsync(id);
+            await _unitOfWork.SaveAsync();
             var mentorToReturn = _mapper.Map<MentorResponseDto>(getMentorById);
-            return StandardResponse<MentorResponseDto>.Success($"Successfully retrieved a mentor with {getMentorById.UserId} Id", mentorToReturn, 200);
+            return StandardResponse<MentorResponseDto>.Success($"Successfully retrieved a mentor with Id: {getMentorById.UserId}", mentorToReturn, 200);
         }
         /*public async Task<StandardResponse<(IEnumerable<MentorResponseDto>, MetaData)>> GetMentorByIsAvailableAsync(MentorRequestInputParemeter paremeter, bool isAvailable)
         {
@@ -130,7 +137,7 @@ namespace CapstoneProject.Application.Services.Implementations
                 _logger.LogError("User does not exist");
                 return StandardResponse<MentorResponseDto>.Failed("User does not exist");
             }
-            if (!await _userManager.IsInRoleAsync(user, Roles.Mentor.ToString() ))
+            if (!await _userManager.IsInRoleAsync(user, UserType.Mentor.ToString() ))
             {
                 _logger.LogError("User is not authorized to update a mentor profile");
                 return StandardResponse<MentorResponseDto>.Failed("User is not authorized to update a mentor profile");
@@ -155,10 +162,6 @@ namespace CapstoneProject.Application.Services.Implementations
         //CreateAppointment Schedule
         //PairMentorWithMentee   ---->
         //Deactivate Account
-        
-
-
-
     }
     
 }
