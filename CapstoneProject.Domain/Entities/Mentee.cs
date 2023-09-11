@@ -9,8 +9,8 @@ namespace CapstoneProject.Domain.Entities
     {
         public bool IsMatched { get; set; }
         [Key]
-        public string UserId { get; set; }
-        public User User { get; set; }
+        public string? UserId { get; set; }
+        public User? User { get; set; }
 
         [ForeignKey("Mentor")]
         public string MentorId { get; set; }    

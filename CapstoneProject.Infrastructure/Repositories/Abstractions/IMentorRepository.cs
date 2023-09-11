@@ -10,7 +10,6 @@ namespace CapstoneProject.Infrastructure.Repositories.Abstractions
         //Task<PagedList<Mentor>> GetAllMentorsPagedAsync(MentorRequestInputParemeter parameter);
         Task<IEnumerable<Mentor>> GetAllMentorsAsync();
         Task<Mentor> GetMentorByIdAsync(string id);
-        //Task<PagedList<Mentor>> GetAllMentorsPagedAsync();
         Task<PagedList<Mentor>> GetMentorByIsAvailableAsync(MentorRequestInputParemeter parameter, bool isAvailable);
     }
 }

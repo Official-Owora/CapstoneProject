@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CapstoneProject.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdatedMentorCo : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,6 +32,8 @@ namespace CapstoneProject.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TechTrack = table.Column<int>(type: "int", nullable: false),
+                    MainProgrammingLanguage = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -163,11 +165,11 @@ namespace CapstoneProject.Infrastructure.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    YearsOfExperience = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Organization = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    YearsOfExperience = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Organization = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MentorshipDuration = table.Column<int>(type: "int", nullable: false),
                     IsAvaiable = table.Column<bool>(type: "bit", nullable: false),
-                    CommunicationChannels = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CommunicationChannels = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -247,8 +249,8 @@ namespace CapstoneProject.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "30625c29-4da5-4e5f-934f-937411a6d11d", null, "Mentor", "MENTOR" },
-                    { "652f408f-b21b-4be7-952c-d4adbe01f4e7", null, "Mentee", "MENTEE" }
+                    { "b870354f-ce63-42ea-853b-0175f05a0872", null, "Mentee", "MENTEE" },
+                    { "e94f5c54-a3cf-43c9-88ae-27f24356971a", null, "Mentor", "MENTOR" }
                 });
 
             migrationBuilder.CreateIndex(

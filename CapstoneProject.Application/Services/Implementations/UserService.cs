@@ -23,11 +23,12 @@ namespace CapstoneProject.Application.Services.Implementations
             _mapper = mapper;
         }
         
-        public async Task<StandardResponse<(IEnumerable<UserResponseDto>, MetaData)>> GetAllUserAsync(UserRequestInputParameter parameter)
+        public async Task<StandardResponse<IEnumerable<UserResponseDto>>> GetAllUserAsync()
         {
-            var result = await _unitOfWork.UserRepository.GetAllUsersAsync(parameter);
+            _logger.LogInformation("Attempting to get list of users from database.");
+            var result = await _unitOfWork.UserRepository.GetAllUsersAsync();
             var userToReturn = _mapper.Map<IEnumerable<UserResponseDto>>(result);
-            return StandardResponse<(IEnumerable<UserResponseDto>, MetaData)>.Success("Successfully retrieved all users", (userToReturn, result.MetaData));
+            return StandardResponse<IEnumerable<UserResponseDto>>.Success("Successfully retrieved all users", userToReturn, 200);
         }
         public async Task<StandardResponse<UserResponseDto>>GetUserById(string Id)
         {
@@ -46,21 +47,7 @@ namespace CapstoneProject.Application.Services.Implementations
             var userToReturn = _mapper.Map<UserResponseDto>(user);
             return StandardResponse<UserResponseDto>.Success("Successfully retrieved a user", userToReturn);
         }
-        public async Task<StandardResponse<UserResponseDto>> UpdateUserAsync(string id, UserRequestDto userRequest)
-        {
-            var userExists = await _unitOfWork.UserRepository.GetUserByIdAsync(id);
-            if (userExists != null)
-            {
-                _logger.LogError("User not found");
-                return StandardResponse<UserResponseDto>.Failed("User not found");
-            }
-            var user = _mapper.Map<User>(userRequest);
-            _unitOfWork.UserRepository.Update(user);
-            await _unitOfWork.SaveAsync();
-            var userToReturn = _mapper.Map<UserResponseDto>(user);
-            return StandardResponse<UserResponseDto>.Success($"Successfully updated a user: {user.UserName}", userToReturn, 200);
 
-        }
         public async Task<StandardResponse<UserResponseDto>> DeleteUser(string id)
         {
             //var response = new UserResponseDto();

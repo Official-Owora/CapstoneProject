@@ -47,12 +47,6 @@ namespace CapstoneProject.Application.Services.Implementations
                 return StandardResponse<MenteeResponseDto>.Failed($"Successfully created a mentee:{ex?.Message ?? ex?.InnerException.Message}");
             }
         }
-        /*public async Task<StandardResponse<(IEnumerable<MenteeResponseDto>, MetaData)>> GetAllMenteesAsync()
-        {            
-            var result = await _unitOfWork.MenteeRepository.GetAllMenteeAsync();
-            var menteeToReturn = _mapper.Map<IEnumerable<MenteeResponseDto>>(result);
-            return StandardResponse<(IEnumerable<MenteeResponseDto>, MetaData)>.Success("Successfully retrieved all mentees", (menteeToReturn, result.MetaData), 200);
-        }*/
 
         public async Task<StandardResponse<IEnumerable<MenteeResponseDto>>> GetAllMenteesAsync()
         {
@@ -75,19 +69,7 @@ namespace CapstoneProject.Application.Services.Implementations
             var menteeToReturn = _mapper.Map<MenteeResponseDto>(getMentee);
             return StandardResponse<MenteeResponseDto>.Success($"Successfully retrieved a mentee with Id: {getMentee.UserId}", menteeToReturn, 200);
         }
-       /* public async Task<StandardResponse<(IEnumerable<MenteeResponseDto>, MetaData)>> GetMenteesByIsMatched(MenteeRequestInputParameter parameter, bool IsMatched)
-        {
-            var GetMentees = await _unitOfWork.MenteeRepository.GetMenteeByIsMatched(parameter, IsMatched);
-            if (!IsMatched)
-            {
-                _logger.LogInformation("Mentees are still available to be matched");
-                var matchedMentees = new List<MenteeResponseDto>();
-                foreach (var mentee in GetMentees)
-                {
 
-                }
-            }
-        }*/
         public async Task<StandardResponse<MenteeResponseDto>> DeleteMenteeAsync(string id)
         {
             _logger.LogInformation($"Checking if the user with the Id {id} exists");
@@ -104,13 +86,23 @@ namespace CapstoneProject.Application.Services.Implementations
         }
         public async Task<StandardResponse<MenteeResponseDto>> UpdateMenteeAsync(string id, MenteeRequestDto menteeRequest)
         {
-            var checkMenteeExists = await _unitOfWork.MenteeRepository.GetMenteeByIdAsync(id);
+            /*var checkMenteeExists = await _unitOfWork.MenteeRepository.GetMenteeByIdAsync(id);
             if(checkMenteeExists == null)
             {
                 _logger.LogError("Mentee does not exist");
                 return StandardResponse<MenteeResponseDto>.Failed("Mentee cannot be found");
+            }*/
+            var mentors = await _unitOfWork.MentorRepository.GetAllMentorsAsync();
+            Mentor mentor = null;
+            foreach (var mentorDB in mentors)
+            {
+                if (mentorDB.TechTrack == menteeRequest.TechTrack && mentorDB.ProgrammingLanguage == menteeRequest.MainProgrammingLanguage && mentor == null)
+                {
+                    mentor=mentorDB;
+                }
             }
             var mentee = _mapper.Map<Mentee>(menteeRequest);
+            mentee.MentorId = mentor.UserId;
             _unitOfWork.MenteeRepository.Update(mentee);
             await _unitOfWork.SaveAsync();
             var menteeUpdated = _mapper.Map<MenteeResponseDto>(mentee);

@@ -64,7 +64,16 @@ namespace CapstoneProject.Infrastructure.RepositoryManager
 
         public async Task SaveAsync()
         {
-            await _dataContext.SaveChangesAsync();
+            try
+            {
+                await _dataContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
         }
+       
     }
 }

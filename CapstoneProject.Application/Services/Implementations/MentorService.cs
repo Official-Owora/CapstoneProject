@@ -5,12 +5,8 @@ using CapstoneProject.Domain.Dtos.ResponseDto;
 using CapstoneProject.Domain.Entities;
 using CapstoneProject.Domain.Enums;
 using CapstoneProject.Infrastructure.RepositoryManager;
-using CapstoneProject.Shared.RequestParameter.Common;
-using CapstoneProject.Shared.RequestParameter.ModelParameters;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Security.AccessControl;
 
 namespace CapstoneProject.Application.Services.Implementations
 {
@@ -28,28 +24,10 @@ namespace CapstoneProject.Application.Services.Implementations
             _mapper = mapper;
             _userManager = userManager;
         }
-        public async Task<StandardResponse<MentorResponseDto>> CreateMentorAsync(MentorRequestDto mentorRequest)
-        {
-            if (mentorRequest == null)
-            {
-                _logger.LogError("mentor details cannot be null");
-                return StandardResponse<MentorResponseDto>.Failed("Mentor request is null");
-            }
-            _logger.LogInformation($"Trying to create a Mentor: {DateTime.Now}");
-            var mentor = _mapper.Map<Mentor>(mentorRequest);
-            _logger.LogInformation($"Successfully created a mentor: {DateTime.Now}");
-            _unitOfWork.MentorRepository.CreateAsync(mentor);
-            //Saving to Database
-            await _unitOfWork.SaveAsync();
-            _logger.LogInformation($"Successfully saved {mentor.FirstName} {mentor.LastName}");
-            //mapping the saved data (source) to frontend
-            var mentorToReturn = _mapper.Map<MentorResponseDto>(mentor);
-            return StandardResponse<MentorResponseDto>.Success($"Successfully created a Mentor: {mentorRequest.FirstName} {mentorRequest.LastName}", mentorToReturn, 200);
-        }
         
         public async Task<StandardResponse<IEnumerable<MentorResponseDto>>> GetAllMentorsAsync()
         {
-            _logger.LogInformation("Attempting to get list of users from database.");
+            _logger.LogInformation("Attempting to get list of mentors from database.");
             var users = await _unitOfWork.MentorRepository.GetAllMentorsAsync();
             var mapUsers = _mapper.Map<IEnumerable<MentorResponseDto>>(users);
             _logger.LogInformation("Returning list of users.");

@@ -18,13 +18,7 @@ namespace CapstoneProject.WebApi.Controllers
         {
             _mentorService = mentorService;
         }
-        // POST api/<MentorController>
-        [HttpPost]
-        public async Task<IActionResult> CreateMentorAsync([FromBody] MentorRequestDto mentorRequest)
-        {
-            var result = await _mentorService.CreateMentorAsync(mentorRequest);
-            return Ok(result);
-        }
+
         // PUT api/<MentorController>
         [HttpPut]
         public async Task<IActionResult> UpdateMentorAsync(string id, [FromBody] MentorRequestDto mentorRequest)
@@ -39,6 +33,7 @@ namespace CapstoneProject.WebApi.Controllers
             var result = await _mentorService.GetAllMentorsAsync();
             return Ok(result);
         }
+        //GET By Id api/<MentorController>
         [HttpGet("ById")]
         public async Task<IActionResult> GetMentorByIdAsync(string id)
         {

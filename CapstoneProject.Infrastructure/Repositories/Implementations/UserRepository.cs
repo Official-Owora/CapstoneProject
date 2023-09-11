@@ -1,8 +1,6 @@
 ﻿using CapstoneProject.Domain.Entities;
 using CapstoneProject.Infrastructure.Persistence;
 using CapstoneProject.Infrastructure.Repositories.Abstractions;
-using CapstoneProject.Shared.RequestParameter.Common;
-using CapstoneProject.Shared.RequestParameter.ModelParameters;
 using Microsoft.EntityFrameworkCore;
 
 namespace CapstoneProject.Infrastructure.Repositories.Implementations
@@ -15,13 +13,10 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
         {
             _users = dataContext.Set<User>();
         }
-        public async Task<PagedList<User>> GetAllUsersAsync(UserRequestInputParameter parameter)
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
-            var users = await _users.Where(u => u.Email.ToLower().Contains(parameter.SearchTerm.ToLower()))
-                .Skip((parameter.PageNumber - 1) * parameter.PageSize)
-                .Take(parameter.PageSize).ToListAsync();
-            var count = await _users.CountAsync();
-            return new PagedList<User>(users, count, parameter.PageNumber, parameter.PageSize);
+            var user = await _users.OrderBy(x => x.Id).ToListAsync();
+            return user;
         }
 
         public async Task<User> GetUserByIdAsync(string id)

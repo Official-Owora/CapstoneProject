@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CapstoneProject.Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230905174730_UpdatedMentor")]
-    partial class UpdatedMentor
+    [Migration("20230910095217_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -170,6 +170,9 @@ namespace CapstoneProject.Infrastructure.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<int>("MainProgrammingLanguage")
+                        .HasColumnType("int");
+
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -189,6 +192,9 @@ namespace CapstoneProject.Infrastructure.Migrations
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TechTrack")
+                        .HasColumnType("int");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -239,13 +245,13 @@ namespace CapstoneProject.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "cd573528-e629-4197-b913-610006fa73b3",
+                            Id = "b870354f-ce63-42ea-853b-0175f05a0872",
                             Name = "Mentee",
                             NormalizedName = "MENTEE"
                         },
                         new
                         {
-                            Id = "fbc0c723-dec5-4f5e-b5a7-92543d7d6c37",
+                            Id = "e94f5c54-a3cf-43c9-88ae-27f24356971a",
                             Name = "Mentor",
                             NormalizedName = "MENTOR"
                         });

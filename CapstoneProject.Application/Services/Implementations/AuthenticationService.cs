@@ -6,6 +6,7 @@ using CapstoneProject.Domain.Entities;
 using CapstoneProject.Domain.Enums;
 using CapstoneProject.Infrastructure.RepositoryManager;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -34,7 +35,7 @@ namespace CapstoneProject.Application.Services.Implementations
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<StandardResponse<IdentityResult>> RegisterUser(UserRequestDto userRequest)
+        public async Task<StandardResponse<IdentityResult>> RegisterUser(UserRequestDto userRequest, MenteeRequestDto menteeRequest, MenteeRequestDto menteeRequestDto)
         {
             try
             {
@@ -75,17 +76,37 @@ namespace CapstoneProject.Application.Services.Implementations
                     else
                     {
                         await _userManager.AddToRoleAsync(user, UserType.Mentee.ToString());
-                        var getuser = await _userManager.FindByEmailAsync(userRequest.Email);
-
+                        var getUser = await _userManager.FindByEmailAsync(userRequest.Email);
 
                         //create and a mentee and save
                         var createMentee = new Mentee
                         {
-                            UserId = getuser.Id,                            
+                            UserId = getUser.Id,
                             FirstName = userRequest.FirstName,
                             LastName = userRequest.LastName,
                         };
                         await _unitOfWork.MenteeRepository.CreateAsync(createMentee);
+                        //Assigning Mentee a Mentor
+                        var mentors = await _unitOfWork.MentorRepository.GetAllMentorsAsync();
+                        Mentor mentor = null;
+                        
+                        foreach (var mentorDB in mentors)
+                        {
+                            if (mentorDB.TechTrack == userRequest.TechTrack && mentorDB.ProgrammingLanguage == userRequest.MainProgrammingLanguage && mentor == null)
+                            {
+                                mentor = mentorDB;
+                            }
+                            var mentee = _mapper.Map<User>(userRequest);
+                            /*if(mentor != null)
+                            {
+                                mentee.Me
+                            }*/
+                        }
+                        
+                        
+                        _unitOfWork.UserRepository.Update(user);
+
+                        //Saving the Mentee to the database
                         await _unitOfWork.SaveAsync();
                     }
 

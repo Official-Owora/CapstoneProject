@@ -5,7 +5,7 @@ namespace CapstoneProject.Application.Services.Abstractions
 {
     public interface IMentorService
     {
-        Task<StandardResponse<MentorResponseDto>> CreateMentorAsync(MentorRequestDto mentorRequest);
+        
         Task<StandardResponse<IEnumerable<MentorResponseDto>>> GetAllMentorsAsync();
         Task<StandardResponse<MentorResponseDto>> GetMentorByIdAsync(string id);
         Task<StandardResponse<MentorResponseDto>> DeleteMentorAsync(string id);

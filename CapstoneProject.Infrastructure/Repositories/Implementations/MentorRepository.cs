@@ -1,4 +1,5 @@
 ﻿using CapstoneProject.Domain.Entities;
+using CapstoneProject.Domain.Enums;
 using CapstoneProject.Infrastructure.Persistence;
 using CapstoneProject.Infrastructure.Repositories.Abstractions;
 using CapstoneProject.Shared.RequestParameter.Common;
@@ -15,19 +16,7 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
         {
             _mentors = dataContext.Set<Mentor>();
         }
-        public async Task<PagedList<Mentor>> GetAllMentorsPagedAsync()
-        {
-            var parameter = new MentorRequestInputParemeter();
-            var mentors = await _mentors
-                .OrderBy(x => x.UserId)
-                .Where(m =>
-                m.FirstName.ToLower().Contains(parameter.SearchTerm.ToLower()) ||
-                m.LastName.ToLower().Contains(parameter.SearchTerm.ToLower()))
-                .Skip((parameter.PageNumber - 1) * parameter.PageSize)
-                .Take(parameter.PageSize).ToListAsync();
-            var count = await _mentors.CountAsync();
-            return new PagedList<Mentor>(mentors, count, parameter.PageNumber, parameter.PageSize);
-        }
+       
         public async Task<IEnumerable<Mentor>> GetAllMentorsAsync()
         {
             var mentor = await _mentors.OrderBy(x => x.UserId).ToListAsync();
@@ -39,17 +28,18 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
         {
             return await _mentors.Where(m => m.UserId.Equals(id)).FirstOrDefaultAsync();
         }
+
         public async Task<PagedList<Mentor>> GetMentorByIsAvailableAsync(MentorRequestInputParemeter parameter, bool isAvailable)
         {
             IQueryable<Mentor> mentors = _mentors;
             if (isAvailable)
             {
-                mentors = mentors.Where(m => m.IsAvaiable);
+                mentors = _mentors.Where(m => m.IsAvaiable);
             }
-            var mentorsPage = await mentors
+            var mentorsPage = await _mentors
                 .Skip((parameter.PageNumber - 1) * parameter.PageSize)
                 .Take(parameter.PageSize).ToListAsync();
-            var totalCount = await mentors.CountAsync();
+            var totalCount = await _mentors.CountAsync();
             return new PagedList<Mentor>(mentorsPage, totalCount, parameter.PageNumber, parameter.PageSize);
         }
     }
