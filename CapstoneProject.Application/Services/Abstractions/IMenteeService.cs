@@ -8,7 +8,6 @@ namespace CapstoneProject.Application.Services.Abstractions
     public interface IMenteeService
     {
         Task<StandardResponse<IEnumerable<MenteeResponseDto>>> GetAllMenteesAsync();
-        Task<StandardResponse<MenteeResponseDto>> CreateMenteeAsync(MenteeRequestDto menteeRequest);
         //Task<StandardResponse<(IEnumerable<MenteeResponseDto>, MetaData)>> GetAllMenteesAsync();
         Task<StandardResponse<MenteeResponseDto>> GetMenteeByIdAsync(string id);
         //Task<StandardResponse<(IEnumerable<MenteeResponseDto>, MetaData)>> GetMenteesByIsMatched(MenteeRequestInputParameter parameter, bool IsMatched);

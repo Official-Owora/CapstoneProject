@@ -17,13 +17,7 @@ namespace CapstoneProject.WebApi.Controllers
         {
             _menteeService = menteeService;
         }
-        // POST api/<MenteeController>
-        [HttpPost]
-        public async Task<IActionResult> CreateMenteeAsync([FromBody] MenteeRequestDto menteeRequest)
-        {
-            var result = await _menteeService.CreateMenteeAsync(menteeRequest);
-            return Ok(result);
-        }
+        
         //GET ALL api/<MenteeController>
         [HttpGet]
         public async Task<IActionResult> GetAllMenteesAsync()

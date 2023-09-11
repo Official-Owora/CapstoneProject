@@ -14,8 +14,14 @@ namespace CapstoneProject.WebApi.Extensions
 {
     public static class ServiceExtension
     {
-        public static void ConfigureDatabaseContext(this IServiceCollection services, IConfiguration configuration) =>
-             services.AddDbContext<DataContext>(option => option.UseSqlServer(configuration.GetConnectionString("Default")));
+        public static void ConfigureDatabaseContext(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDbContext<DataContext>(options =>
+            {
+                options.UseSqlServer(configuration.GetConnectionString("Default"));
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            });
+        }
 
         public static void ResolvingDependencyInjection(this IServiceCollection services)
         {

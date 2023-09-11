@@ -1,8 +1,4 @@
 ﻿using CapstoneProject.Application.Services.Abstractions;
-using CapstoneProject.Application.Services.Implementations;
-using CapstoneProject.Domain.Dtos.RequestDto;
-using CapstoneProject.Shared.RequestParameter.ModelParameters;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CapstoneProject.WebApi.Controllers

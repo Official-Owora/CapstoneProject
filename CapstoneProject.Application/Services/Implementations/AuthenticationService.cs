@@ -6,7 +6,6 @@ using CapstoneProject.Domain.Entities;
 using CapstoneProject.Domain.Enums;
 using CapstoneProject.Infrastructure.RepositoryManager;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -23,7 +22,7 @@ namespace CapstoneProject.Application.Services.Implementations
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _config;
         private readonly IUnitOfWork _unitOfWork;
-        public User _user;
+        private User _user;
 
 
         public AuthenticationService(ILogger<AuthenticationService> logger, IMapper mapper, IConfiguration config, UserManager<User> userManager, IUnitOfWork unitOfWork)
@@ -35,7 +34,7 @@ namespace CapstoneProject.Application.Services.Implementations
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<StandardResponse<IdentityResult>> RegisterUser(UserRequestDto userRequest, MenteeRequestDto menteeRequest, MenteeRequestDto menteeRequestDto)
+        public async Task<StandardResponse<IdentityResult>> RegisterUser(UserRequestDto userRequest)
         {
             try
             {
@@ -87,29 +86,25 @@ namespace CapstoneProject.Application.Services.Implementations
                         };
                         await _unitOfWork.MenteeRepository.CreateAsync(createMentee);
                         //Assigning Mentee a Mentor
+                        
                         var mentors = await _unitOfWork.MentorRepository.GetAllMentorsAsync();
                         Mentor mentor = null;
-                        
+
                         foreach (var mentorDB in mentors)
                         {
                             if (mentorDB.TechTrack == userRequest.TechTrack && mentorDB.ProgrammingLanguage == userRequest.MainProgrammingLanguage && mentor == null)
                             {
                                 mentor = mentorDB;
                             }
-                            var mentee = _mapper.Map<User>(userRequest);
-                            /*if(mentor != null)
-                            {
-                                mentee.Me
-                            }*/
                         }
-                        
-                        
+                        //Assigning the MentorId to the MentorId on the Mentee table. Recently added
+                        if (mentor != null)
+                        {
+                            createMentee.MentorId = mentor.UserId;
+                        }
                         _unitOfWork.UserRepository.Update(user);
-
-                        //Saving the Mentee to the database
-                        await _unitOfWork.SaveAsync();
+                        await _unitOfWork.SaveAsync();                       
                     }
-
                 }
                 return new StandardResponse<IdentityResult>
                 {
@@ -130,7 +125,7 @@ namespace CapstoneProject.Application.Services.Implementations
 
         public async Task<bool> ValidateUser(UserLoginDto userForAuth)
         {
-            var user = await _userManager.FindByEmailAsync(userForAuth.Email);
+            _user = await _userManager.FindByEmailAsync(userForAuth.Email);
             var result = (_user != null && await _userManager.CheckPasswordAsync(_user, userForAuth.Password));
             if (!result)
                 _logger.LogWarning($"{nameof(ValidateUser)}: Authentication failed. Wrong username or password");

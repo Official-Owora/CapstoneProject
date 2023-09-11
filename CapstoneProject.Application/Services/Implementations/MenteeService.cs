@@ -3,9 +3,11 @@ using CapstoneProject.Application.Services.Abstractions;
 using CapstoneProject.Domain.Dtos.RequestDto;
 using CapstoneProject.Domain.Dtos.ResponseDto;
 using CapstoneProject.Domain.Entities;
+using CapstoneProject.Domain.Enums;
 using CapstoneProject.Infrastructure.RepositoryManager;
 using CapstoneProject.Shared.RequestParameter.Common;
 using CapstoneProject.Shared.RequestParameter.ModelParameters;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.Metrics;
 
@@ -15,37 +17,15 @@ namespace CapstoneProject.Application.Services.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<MenteeService> _logger;
+        private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
-        public MenteeService(IUnitOfWork unitOfWork, ILogger<MenteeService> logger, IMapper mapper)
+        public MenteeService(IUnitOfWork unitOfWork, ILogger<MenteeService> logger, IMapper mapper, UserManager<User> userManager)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
-        }
-        public async Task<StandardResponse<MenteeResponseDto>> CreateMenteeAsync(MenteeRequestDto menteeRequest)
-        {
-            try
-            {
-                if (menteeRequest == null)
-                {
-                    _logger.LogError("Mentee details cannot be null");
-                    return StandardResponse<MenteeResponseDto>.Failed("Mentee request is nul");
-                }
-                _logger.LogInformation($"Trying to create a mentee : {DateTime.Now}");
-                var mentee = _mapper.Map<Mentee>(menteeRequest);
-                _logger.LogInformation($"Successfully created a mentee: {DateTime.Now}");
-                await _unitOfWork.MenteeRepository.CreateAsync(mentee);
-                await _unitOfWork.SaveAsync();
-                _logger.LogInformation($"Successfully saved {mentee.UserId}");
-                var menteeToReturn = _mapper.Map<MenteeResponseDto>(mentee);
-                return StandardResponse<MenteeResponseDto>.Success($"Successfully created a mentee: {mentee.FirstName} {mentee.LastName}", menteeToReturn, 200);
-            }
-            catch (Exception ex)
-            {
-
-                return StandardResponse<MenteeResponseDto>.Failed($"Successfully created a mentee:{ex?.Message ?? ex?.InnerException.Message}");
-            }
+            _userManager = userManager;
         }
 
         public async Task<StandardResponse<IEnumerable<MenteeResponseDto>>> GetAllMenteesAsync()
@@ -86,12 +66,39 @@ namespace CapstoneProject.Application.Services.Implementations
         }
         public async Task<StandardResponse<MenteeResponseDto>> UpdateMenteeAsync(string id, MenteeRequestDto menteeRequest)
         {
-            /*var checkMenteeExists = await _unitOfWork.MenteeRepository.GetMenteeByIdAsync(id);
+            var user = await  _userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                _logger.LogError("User does not exist");
+                return StandardResponse<MenteeResponseDto>.Failed("User does not exist");
+            }
+            if (!await _userManager.IsInRoleAsync(user, UserType.Mentee.ToString()))
+            {
+                _logger.LogError("User is not authorized to update a mentee profile");
+                return StandardResponse<MenteeResponseDto>.Failed("User is not authorized to update a mentee profile");
+            }
+            var checkMenteeExists = await _unitOfWork.MenteeRepository.GetMenteeByIdAsync(id);
+            if (checkMenteeExists == null)
+            {
+                _logger.LogError("Mentee does not exist");
+                return StandardResponse<MenteeResponseDto>.Failed("Mentee does not exist");
+            }
+
+            var mentee = _mapper.Map<Mentee>(menteeRequest);
+            _unitOfWork.MenteeRepository.Update(mentee);
+            await _unitOfWork.SaveAsync();
+            var menteeUpdated = _mapper.Map<MenteeResponseDto>(mentee);
+            return StandardResponse<MenteeResponseDto>.Success($"Successfully updated Mentor with Id: {mentee.UserId}", menteeUpdated, 200);
+        }
+        /*public async Task<StandardResponse<MenteeResponseDto>> UpdateMenteeAsync(string id, MenteeRequestDto menteeRequest)
+        {
+            *//*var checkMenteeExists = await _unitOfWork.MenteeRepository.GetMenteeByIdAsync(id);
             if(checkMenteeExists == null)
             {
                 _logger.LogError("Mentee does not exist");
                 return StandardResponse<MenteeResponseDto>.Failed("Mentee cannot be found");
-            }*/
+            }*//*
             var mentors = await _unitOfWork.MentorRepository.GetAllMentorsAsync();
             Mentor mentor = null;
             foreach (var mentorDB in mentors)
@@ -107,6 +114,6 @@ namespace CapstoneProject.Application.Services.Implementations
             await _unitOfWork.SaveAsync();
             var menteeUpdated = _mapper.Map<MenteeResponseDto>(mentee);
             return StandardResponse<MenteeResponseDto>.Success($"Successfully updated a mentee with Id: {mentee.UserId}", menteeUpdated, 200);
-        }
+        }*/
     }
 }
