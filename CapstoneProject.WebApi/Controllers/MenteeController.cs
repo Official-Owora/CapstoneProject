@@ -1,4 +1,5 @@
 ﻿using CapstoneProject.Application.Services.Abstractions;
+using CapstoneProject.Application.Services.Implementations;
 using CapstoneProject.Domain.Dtos.RequestDto;
 using CapstoneProject.Shared.RequestParameter.ModelParameters;
 using Microsoft.AspNetCore.Http;
@@ -39,6 +40,17 @@ namespace CapstoneProject.WebApi.Controllers
             
             var result = await _menteeService.UpdateMenteeAsync(id, menteeRequest);
             return Ok(result);
+        }
+        //POST api/<MentorController>
+        [HttpPost("Image/{id}")]
+        public IActionResult UploadProfileImageAsync(string id, IFormFile file)
+        {
+            var result = _menteeService.UploadProfileImageAsync(id, file);
+            if (result.Result.Succeeded)
+            {
+                return Ok(new { ImageUrl = result.Result.Data.Item2 });
+            }
+            return NotFound();
         }
     }
 }

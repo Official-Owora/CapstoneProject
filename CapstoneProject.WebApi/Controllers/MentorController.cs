@@ -1,4 +1,5 @@
 ﻿using CapstoneProject.Application.Services.Abstractions;
+using CapstoneProject.Application.Services.Implementations;
 using CapstoneProject.Domain.Dtos.RequestDto;
 using CapstoneProject.Infrastructure.Repositories.Abstractions;
 using CapstoneProject.Shared.RequestParameter.ModelParameters;
@@ -46,6 +47,17 @@ namespace CapstoneProject.WebApi.Controllers
         {
             var result = await _mentorService.DeleteMentorAsync(id);
             return Ok(result);
+        }
+        //POST api/<MentorController>
+        [HttpPost("Image/{id}")]
+        public IActionResult UploadProfileImageAsync(string id, IFormFile file)
+        {
+            var result = _mentorService.UploadProfileImageAsync(id, file);
+            if (result.Result.Succeeded)
+            {
+                return Ok(new { ImageUrl = result.Result.Data.Item2 });
+            }
+            return NotFound();
         }
     }
 }

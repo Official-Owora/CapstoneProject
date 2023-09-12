@@ -17,17 +17,15 @@ builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
 // Add services to the container.
-/*builder.Services.AddDbContext<DataContext>(Options =>
-{
-    Options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
-    Options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-});*/
+
 builder.Services.AddAutoMapper(typeof(MapInitializers));
 builder.Services.ResolvingDependencyInjection();
 builder.Services.ConfigureDatabaseContext(builder.Configuration);
 builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureJWT(builder.Configuration);
+builder.Services.ConfigurePhotoService();
+//builder.Services.ConfigureSwaggerAuth();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

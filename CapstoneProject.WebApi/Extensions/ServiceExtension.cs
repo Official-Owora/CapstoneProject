@@ -69,6 +69,7 @@ namespace CapstoneProject.WebApi.Extensions
                 };
             });
         }
+        public static void ConfigurePhotoService(this IServiceCollection services) => services.AddScoped<IPhotoService, PhotoService>();
         public static void ConfigureSwaggerAuth(this IServiceCollection services)
         {
             services.AddSwaggerGen(opt =>

@@ -5,11 +5,9 @@ using CapstoneProject.Domain.Dtos.ResponseDto;
 using CapstoneProject.Domain.Entities;
 using CapstoneProject.Domain.Enums;
 using CapstoneProject.Infrastructure.RepositoryManager;
-using CapstoneProject.Shared.RequestParameter.Common;
-using CapstoneProject.Shared.RequestParameter.ModelParameters;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics.Metrics;
 
 namespace CapstoneProject.Application.Services.Implementations
 {
@@ -19,13 +17,15 @@ namespace CapstoneProject.Application.Services.Implementations
         private readonly ILogger<MenteeService> _logger;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
+        private readonly IPhotoService _photoService;
 
-        public MenteeService(IUnitOfWork unitOfWork, ILogger<MenteeService> logger, IMapper mapper, UserManager<User> userManager)
+        public MenteeService(IUnitOfWork unitOfWork, ILogger<MenteeService> logger, IMapper mapper, UserManager<User> userManager, IPhotoService photoService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
             _userManager = userManager;
+            _photoService = photoService;
         }
 
         public async Task<StandardResponse<IEnumerable<MenteeResponseDto>>> GetAllMenteesAsync()
@@ -90,6 +90,23 @@ namespace CapstoneProject.Application.Services.Implementations
             await _unitOfWork.SaveAsync();
             var menteeUpdated = _mapper.Map<MenteeResponseDto>(mentee);
             return StandardResponse<MenteeResponseDto>.Success($"Successfully updated Mentor with Id: {mentee.UserId}", menteeUpdated, 200);
+        }
+        public async Task<StandardResponse<(bool, string)>> UploadProfileImageAsync(string Id, IFormFile file)
+        {
+            var result = await _unitOfWork.MenteeRepository.GetMenteeByIdAsync(Id);
+            if (result == null)
+            {
+                _logger.LogWarning($"No mentee with id {Id}");
+                return StandardResponse<(bool, string)>.Failed("No mentee found", 406);
+            }
+            var mentee = _mapper.Map<Mentee>(result);
+            string url = _photoService.AddPhoto(file);
+            if (string.IsNullOrWhiteSpace(url))
+                return StandardResponse<(bool, string)>.Failed("Failed to upload", 500);
+            result.ImageURL = url;
+            _unitOfWork.MenteeRepository.Update(result);
+            await _unitOfWork.SaveAsync();
+            return StandardResponse<(bool, string)>.Success("Successfully uploaded image", (false, url), 204);
         }
         /*public async Task<StandardResponse<MenteeResponseDto>> UpdateMenteeAsync(string id, MenteeRequestDto menteeRequest)
         {
