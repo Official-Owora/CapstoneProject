@@ -7,7 +7,7 @@ namespace CapstoneProject.Domain.Entities
 {
     public class Mentee : BaseEntity
     {
-        public bool IsMatched { get; set; }
+        public bool IsMatched { get; set; } = false;
         [Key]
         public string? UserId { get; set; }
         public User? User { get; set; }

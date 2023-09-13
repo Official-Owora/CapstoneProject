@@ -26,7 +26,6 @@ namespace CapstoneProject.WebApi.Extensions
         public static void ResolvingDependencyInjection(this IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IMenteeService, MenteeService>();
             services.AddScoped<IMentorService, MentorService>();

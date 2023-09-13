@@ -17,13 +17,22 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
             _mentors = dataContext.Set<Mentor>();
         }
        
+        public async Task<PagedList<Mentor>> GetAllMentorsAsync(MentorRequestInputParemeter paremeter)
+        {
+            var mentor = await _mentors.OrderBy(x => x.UserId)
+                .Skip((paremeter.PageNumber - 1) * paremeter.PageSize)
+                .Take(paremeter.PageSize)
+                .ToListAsync();
+            var count = await _mentors.CountAsync();
+            return new PagedList<Mentor>(mentor, count, paremeter.PageNumber, paremeter.PageSize);
+        }
         public async Task<IEnumerable<Mentor>> GetAllMentorsAsync()
         {
-            var mentor = await _mentors.OrderBy(x => x.UserId).ToListAsync();
-            return mentor;
+            var mentors = await _mentors.OrderBy(m => m.UserId).ToListAsync();
+            return mentors;
         }
 
-           
+
         public async Task<Mentor> GetMentorByIdAsync(string id)
         {
             return await _mentors.Where(m => m.UserId.Equals(id)).FirstOrDefaultAsync();
@@ -34,7 +43,7 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
             IQueryable<Mentor> mentors = _mentors;
             if (isAvailable)
             {
-                mentors = _mentors.Where(m => m.IsAvaiable);
+                mentors = _mentors.Where(m => m.IsAvaiable == true);
             }
             var mentorsPage = await _mentors
                 .Skip((parameter.PageNumber - 1) * parameter.PageSize)

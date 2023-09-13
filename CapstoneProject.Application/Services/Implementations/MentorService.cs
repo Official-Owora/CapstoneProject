@@ -5,6 +5,7 @@ using CapstoneProject.Domain.Dtos.ResponseDto;
 using CapstoneProject.Domain.Entities;
 using CapstoneProject.Domain.Enums;
 using CapstoneProject.Infrastructure.RepositoryManager;
+using CapstoneProject.Shared.RequestParameter.ModelParameters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -28,10 +29,10 @@ namespace CapstoneProject.Application.Services.Implementations
             _photoService = photoService;
         }
 
-        public async Task<StandardResponse<IEnumerable<MentorResponseDto>>> GetAllMentorsAsync()
+        public async Task<StandardResponse<IEnumerable<MentorResponseDto>>> GetAllMentorsAsync(MentorRequestInputParemeter paremeter)
         {
             _logger.LogInformation("Attempting to get list of mentors from database.");
-            var users = await _unitOfWork.MentorRepository.GetAllMentorsAsync();
+            var users = await _unitOfWork.MentorRepository.GetAllMentorsAsync(paremeter);
             var mapUsers = _mapper.Map<IEnumerable<MentorResponseDto>>(users);
             _logger.LogInformation("Returning list of users.");
             return StandardResponse<IEnumerable<MentorResponseDto>>.Success("successful",mapUsers,200);

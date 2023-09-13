@@ -4,6 +4,6 @@ namespace CapstoneProject.Shared.RequestParameter.ModelParameters
 {
     public class MentorRequestInputParemeter : RequestInputParameter
     {
-        public bool isAvalable { get; set; }
+        //public bool isAvalable { get; set; }
     }
 }

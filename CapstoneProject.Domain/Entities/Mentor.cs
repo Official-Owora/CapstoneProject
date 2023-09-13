@@ -7,10 +7,9 @@ namespace CapstoneProject.Domain.Entities
 {
     public class Mentor : BaseEntity
     {
-        public string? YearsOfExperience { get; set; }
         public string? Organization { get; set; }
         public MentorshipDuration MentorshipDuration { get; set; }
-        public bool IsAvaiable { get; set; }  //So mentor can update availability
+        public bool IsAvaiable { get; set; } = false;  //So mentor can update availability
         public  string? CommunicationChannels { get; set; }
         //Navigational property
         public ICollection<Mentee> mentees { get; set; }

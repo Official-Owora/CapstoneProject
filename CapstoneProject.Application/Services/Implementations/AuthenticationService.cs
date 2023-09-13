@@ -5,6 +5,7 @@ using CapstoneProject.Domain.Dtos.ResponseDto;
 using CapstoneProject.Domain.Entities;
 using CapstoneProject.Domain.Enums;
 using CapstoneProject.Infrastructure.RepositoryManager;
+using CapstoneProject.Shared.RequestParameter.ModelParameters;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -92,7 +93,7 @@ namespace CapstoneProject.Application.Services.Implementations
 
                         foreach (var mentorDB in mentors)
                         {
-                            if (mentorDB.TechTrack == userRequest.TechTrack && mentorDB.ProgrammingLanguage == userRequest.MainProgrammingLanguage && mentor == null)
+                            if (mentorDB.YearsOfExperience >= userRequest.YearsOfExperience && mentorDB.TechTrack == userRequest.TechTrack && mentorDB.ProgrammingLanguage == userRequest.ProgrammingLanguage && mentor == null)
                             {
                                 mentor = mentorDB;
                             }
@@ -109,8 +110,9 @@ namespace CapstoneProject.Application.Services.Implementations
                 return new StandardResponse<IdentityResult>
                 {
                     Succeeded = true,
-                    Message = $"User registered successfully"
-                };
+                    Message = $"User registered successfully and assigned a mentor"
+                };                
+                
             }
             catch (Exception ex)
             {
@@ -173,4 +175,3 @@ namespace CapstoneProject.Application.Services.Implementations
         }
     }
 }
-

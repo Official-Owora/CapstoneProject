@@ -4,6 +4,7 @@ using CapstoneProject.Domain.Dtos.RequestDto;
 using CapstoneProject.Infrastructure.Repositories.Abstractions;
 using CapstoneProject.Shared.RequestParameter.ModelParameters;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -29,33 +30,35 @@ namespace CapstoneProject.WebApi.Controllers
         }
         //GET ALL api/<MentorController>
         [HttpGet]
-        public async Task<IActionResult> GetAllMentorsAsync()
+        public async Task<IActionResult> GetAllMentorsAsync([FromQuery] MentorRequestInputParemeter paremeter)
         {
-            var result = await _mentorService.GetAllMentorsAsync();
-            return Ok(result);
+            var mentors = await _mentorService.GetAllMentorsAsync(paremeter);
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(mentors.Data));
+            return Ok(mentors.Data);
+            //return Ok(mentors);
         }
         //GET By Id api/<MentorController>
         [HttpGet("ById")]
         public async Task<IActionResult> GetMentorByIdAsync(string id)
         {
-            var result = await _mentorService.GetMentorByIdAsync(id);
-            return Ok(result);
+            var mentor = await _mentorService.GetMentorByIdAsync(id);
+            return Ok(mentor);
         }
         //DELETE api/<MentorController>
         [HttpDelete]
         public async Task<IActionResult> DeleteMentorById(string id, MentorRequestDto mentorRequest)
         {
-            var result = await _mentorService.DeleteMentorAsync(id);
-            return Ok(result);
+            var mentor = await _mentorService.DeleteMentorAsync(id);
+            return Ok(mentor);
         }
         //POST api/<MentorController>
         [HttpPost("Image/{id}")]
         public IActionResult UploadProfileImageAsync(string id, IFormFile file)
         {
-            var result = _mentorService.UploadProfileImageAsync(id, file);
-            if (result.Result.Succeeded)
+            var picture = _mentorService.UploadProfileImageAsync(id, file);
+            if (picture.Result.Succeeded)
             {
-                return Ok(new { ImageUrl = result.Result.Data.Item2 });
+                return Ok(new { ImageUrl = picture.Result.Data.Item2 });
             }
             return NotFound();
         }
