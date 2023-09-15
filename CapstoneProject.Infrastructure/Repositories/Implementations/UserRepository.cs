@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CapstoneProject.Infrastructure.Repositories.Implementations
 {
-    internal sealed class UserRepository : RepositoryBase<User>, IUserRepository
+    public class UserRepository : RepositoryBase<User>, IUserRepository
     {
         private readonly DbSet<User> _users;
 

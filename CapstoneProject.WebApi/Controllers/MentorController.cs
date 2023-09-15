@@ -23,19 +23,19 @@ namespace CapstoneProject.WebApi.Controllers
 
         // PUT api/<MentorController>
         [HttpPut]
-        public async Task<IActionResult> UpdateMentorAsync(string id, [FromBody] MentorRequestDto mentorRequest)
+        public async Task<IActionResult> UpdateMentorAsync(string id, [FromForm] MentorRequestDto mentorRequest)
         {
             var result = await _mentorService.UpdateMentorAsync(id, mentorRequest);
             return Ok(result);
         }
         //GET ALL api/<MentorController>
         [HttpGet]
-        public async Task<IActionResult> GetAllMentorsAsync([FromQuery] MentorRequestInputParemeter paremeter)
+        public async Task<IActionResult> GetAllMentorsAsync(int pageNumber)
         {
-            var mentors = await _mentorService.GetAllMentorsAsync(paremeter);
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(mentors.Data));
-            return Ok(mentors.Data);
-            //return Ok(mentors);
+            var mentors = await _mentorService.GetAllMentorsAsync(pageNumber);
+            /*Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(mentors.Data));
+            return Ok(mentors.Data);*/
+            return Ok(mentors);
         }
         //GET By Id api/<MentorController>
         [HttpGet("ById")]

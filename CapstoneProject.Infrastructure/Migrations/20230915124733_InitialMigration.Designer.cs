@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CapstoneProject.Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230913104444_ModifiedMigration")]
-    partial class ModifiedMigration
+    [Migration("20230915124733_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,15 +70,14 @@ namespace CapstoneProject.Infrastructure.Migrations
                     b.Property<string>("ImageURL")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsMatched")
-                        .HasColumnType("bit");
-
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MentorId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("MentorshipDuration")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("ModifiedOn")
                         .HasColumnType("datetime2");
@@ -107,7 +106,7 @@ namespace CapstoneProject.Infrastructure.Migrations
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CommunicationChannels")
+                    b.Property<string>("CommunicationChannel")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedOn")
@@ -173,9 +172,6 @@ namespace CapstoneProject.Infrastructure.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<int>("MainProgrammingLanguage")
-                        .HasColumnType("int");
-
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -195,9 +191,6 @@ namespace CapstoneProject.Infrastructure.Migrations
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TechTrack")
-                        .HasColumnType("int");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -248,13 +241,13 @@ namespace CapstoneProject.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "eb11a599-b371-40a9-bab0-01161e215252",
+                            Id = "b631f9bf-4456-46b8-a7cb-a6debf43f4ef",
                             Name = "Mentee",
                             NormalizedName = "MENTEE"
                         },
                         new
                         {
-                            Id = "47f0e315-431a-47de-9cc7-9bb174d82ac3",
+                            Id = "4ea41a53-e3c2-46b2-a1f6-cdc701cb48c1",
                             Name = "Mentor",
                             NormalizedName = "MENTOR"
                         });
@@ -382,8 +375,7 @@ namespace CapstoneProject.Infrastructure.Migrations
                     b.HasOne("CapstoneProject.Domain.Entities.Mentor", "Mentor")
                         .WithMany("mentees")
                         .HasForeignKey("MentorId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("CapstoneProject.Domain.Entities.User", "User")
                         .WithOne("Mentee")

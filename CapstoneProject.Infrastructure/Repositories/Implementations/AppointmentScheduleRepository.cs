@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CapstoneProject.Infrastructure.Repositories.Implementations
 {
-    internal sealed class AppointmentScheduleRepository : RepositoryBase<AppointmentSchedule>, IAppointmentScheduleRepository
+    public class AppointmentScheduleRepository : RepositoryBase<AppointmentSchedule>, IAppointmentScheduleRepository
     {
         private readonly DbSet<AppointmentSchedule> _schedules;
 

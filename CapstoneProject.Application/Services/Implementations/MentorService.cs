@@ -29,13 +29,25 @@ namespace CapstoneProject.Application.Services.Implementations
             _photoService = photoService;
         }
 
-        public async Task<StandardResponse<IEnumerable<MentorResponseDto>>> GetAllMentorsAsync(MentorRequestInputParemeter paremeter)
+        public async Task<StandardResponse<IEnumerable<MentorResponseDto>>> GetAllMentorsAsync(int pageNumber)
         {
+            var parameter = new MenteeRequestInputParameter();
+            parameter.PageNumber = pageNumber;
+            parameter.PageSize = 2;
+
             _logger.LogInformation("Attempting to get list of mentors from database.");
-            var users = await _unitOfWork.MentorRepository.GetAllMentorsAsync(paremeter);
+            var users = await _unitOfWork.MentorRepository.GetAllMentorsAsync();
             var mapUsers = _mapper.Map<IEnumerable<MentorResponseDto>>(users);
             _logger.LogInformation("Returning list of users.");
             return StandardResponse<IEnumerable<MentorResponseDto>>.Success("successful",mapUsers,200);
+        }
+        public async Task<StandardResponse<IEnumerable<MentorResponseDto>>> GetAllMentorsAsync()
+        {
+            _logger.LogInformation("Attempting to get list of mentors from database.");
+            var users = await _unitOfWork.MentorRepository.GetAllMentorsAsync();
+            var mapUsers = _mapper.Map<IEnumerable<MentorResponseDto>>(users);
+            _logger.LogInformation("Returning list of users.");
+            return StandardResponse<IEnumerable<MentorResponseDto>>.Success("successful", mapUsers, 200);
         }
        
         public async Task<StandardResponse<MentorResponseDto>> GetMentorByIdAsync(string id)
@@ -75,7 +87,7 @@ namespace CapstoneProject.Application.Services.Implementations
                 _logger.LogError("User does not exist");
                 return StandardResponse<MentorResponseDto>.Failed("User does not exist");
             }
-            if (!await _userManager.IsInRoleAsync(user, UserType.Mentor.ToString() ))
+            if (!await _userManager.IsInRoleAsync(user, UserType.Mentor.ToString()))
             {
                 _logger.LogError("User is not authorized to update a mentor profile");
                 return StandardResponse<MentorResponseDto>.Failed("User is not authorized to update a mentor profile");
@@ -110,7 +122,20 @@ namespace CapstoneProject.Application.Services.Implementations
             await _unitOfWork.SaveAsync();
             return StandardResponse<(bool, string)>.Success("Successfully uploaded image", (true, url), 204);
         }
-        
+        /*public async Task<StandardResponse<MentorResponseDto>> GetMentorByIsAvailableAsync(bool IsAvailable)
+        {
+            var getMentorById = await _unitOfWork.MentorRepository.GetMentorByIdAsync(id);
+            if (getMentorById == null)
+            {
+                _logger.LogError("Mentor not found");
+                return StandardResponse<MentorResponseDto>.Failed("Mentor does not exist");
+            }
+            await _unitOfWork.MentorRepository.GetMentorByIdAsync(id);
+            await _unitOfWork.SaveAsync();
+            var mentorToReturn = _mapper.Map<MentorResponseDto>(getMentorById);
+            return StandardResponse<MentorResponseDto>.Success($"Successfully retrieved a mentor with Id: {getMentorById.UserId}", mentorToReturn, 200);
+        }*/
+
         //Endpoints to be created 
 
         //GetAvailableMentee     --->OrderByAscending

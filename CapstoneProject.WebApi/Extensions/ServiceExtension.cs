@@ -74,6 +74,7 @@ namespace CapstoneProject.WebApi.Extensions
             services.AddSwaggerGen(opt =>
             {
                 opt.SwaggerDoc("v1", new OpenApiInfo { Title = "CapstoneProject API", Version = "v1" });
+                opt.SchemaFilter<EnumSchemaFilter>();
                 opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,

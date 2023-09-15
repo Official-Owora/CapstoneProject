@@ -57,7 +57,7 @@ namespace CapstoneProject.Application.Services.Implementations
 
                 if (result.Succeeded)
                 {
-                    if (userRequest.Roles == UserType.Mentor)
+                    if (userRequest.UserType == UserType.Mentor)
                     {
 
                         await _userManager.AddToRoleAsync(user, UserType.Mentor.ToString());
@@ -68,9 +68,27 @@ namespace CapstoneProject.Application.Services.Implementations
                             UserId = getUser.Id,
                             FirstName = userRequest.FirstName,
                             LastName = userRequest.LastName,
+                            TechTrack = userRequest.TechTrack,
+                            ProgrammingLanguage = userRequest.ProgrammingLanguage,
+                            YearsOfExperience = userRequest.YearsOfExperience,
+                            MentorshipDuration = userRequest.MentorshipDuration,
+                            
                         };
                         await _unitOfWork.MentorRepository.CreateAsync(createMentor);
                         await _unitOfWork.SaveAsync();
+                        if (string.IsNullOrEmpty(createMentor.UserId))
+                        {
+                            return new StandardResponse<IdentityResult>
+                            {
+                                Succeeded = false,
+                                Message = "Mentor creation failed. Please try again."
+                            };
+                        }
+                        return new StandardResponse<IdentityResult>
+                        {
+                            Succeeded = true,
+                            Message = $"Mentor registered successfully"
+                        };
 
                     }
                     else
@@ -84,16 +102,32 @@ namespace CapstoneProject.Application.Services.Implementations
                             UserId = getUser.Id,
                             FirstName = userRequest.FirstName,
                             LastName = userRequest.LastName,
+                            TechTrack = userRequest.TechTrack,
+                            ProgrammingLanguage = userRequest.ProgrammingLanguage,
+                            YearsOfExperience = userRequest.YearsOfExperience,
+                            MentorshipDuration = userRequest.MentorshipDuration,
+                           
                         };
                         await _unitOfWork.MenteeRepository.CreateAsync(createMentee);
+                        //await _unitOfWork.SaveAsync();
+                        if (string.IsNullOrEmpty(createMentee.UserId))
+                        {
+                            return new StandardResponse<IdentityResult>
+                            {
+                                Succeeded = false,
+                                Message = "Mentee creation failed. Please try again."
+                            };
+                        }
+
                         //Assigning Mentee a Mentor
-                        
+
                         var mentors = await _unitOfWork.MentorRepository.GetAllMentorsAsync();
                         Mentor mentor = null;
 
                         foreach (var mentorDB in mentors)
                         {
-                            if (mentorDB.YearsOfExperience >= userRequest.YearsOfExperience && mentorDB.TechTrack == userRequest.TechTrack && mentorDB.ProgrammingLanguage == userRequest.ProgrammingLanguage && mentor == null)
+                            if (mentorDB.IsAvaiable == true && mentorDB.YearsOfExperience >= userRequest.YearsOfExperience && mentorDB.MentorshipDuration == userRequest.MentorshipDuration
+                                && mentorDB.TechTrack == userRequest.TechTrack && mentorDB.ProgrammingLanguage == userRequest.ProgrammingLanguage && mentor == null)
                             {
                                 mentor = mentorDB;
                             }
@@ -107,6 +141,15 @@ namespace CapstoneProject.Application.Services.Implementations
                         await _unitOfWork.SaveAsync();                       
                     }
                 }
+                else
+                {
+                    return new StandardResponse<IdentityResult>
+                    {
+                        Succeeded = false,
+                        Message = $"User registration failed: {string.Join(", ", result.Errors.Select(e => e.Description))}"
+                    };
+                }
+
                 return new StandardResponse<IdentityResult>
                 {
                     Succeeded = true,

@@ -7,13 +7,12 @@ namespace CapstoneProject.Domain.Entities
 {
     public class Mentee : BaseEntity
     {
-        public bool IsMatched { get; set; } = false;
         [Key]
         public string? UserId { get; set; }
         public User? User { get; set; }
 
         [ForeignKey("Mentor")]
-        public string MentorId { get; set; }    
-        public Mentor Mentor { get; set; }    
+        public string? MentorId { get; set; }    
+        public Mentor? Mentor { get; set; }    
     }
 }

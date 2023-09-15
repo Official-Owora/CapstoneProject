@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CapstoneProject.Infrastructure.Repositories.Implementations
 {
-    internal sealed class MentorRepository : RepositoryBase<Mentor>, IMentorRepository
+    public class MentorRepository : RepositoryBase<Mentor>, IMentorRepository
     {
         private readonly DbSet<Mentor> _mentors;
 
@@ -17,19 +17,21 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
             _mentors = dataContext.Set<Mentor>();
         }
        
+        public async Task<IEnumerable<Mentor>> GetAllMentorsAsync()
+        {
+            var mentor = await _mentors.OrderBy(x => x.UserId).ToListAsync();
+            return mentor;
+             
+        }
         public async Task<PagedList<Mentor>> GetAllMentorsAsync(MentorRequestInputParemeter paremeter)
         {
-            var mentor = await _mentors.OrderBy(x => x.UserId)
+            var mentors = await _mentors.OrderBy(m => m.UserId)
                 .Skip((paremeter.PageNumber - 1) * paremeter.PageSize)
                 .Take(paremeter.PageSize)
                 .ToListAsync();
             var count = await _mentors.CountAsync();
-            return new PagedList<Mentor>(mentor, count, paremeter.PageNumber, paremeter.PageSize);
-        }
-        public async Task<IEnumerable<Mentor>> GetAllMentorsAsync()
-        {
-            var mentors = await _mentors.OrderBy(m => m.UserId).ToListAsync();
-            return mentors;
+            return new PagedList<Mentor>(mentors, count, paremeter.PageSize, paremeter.PageNumber);
+
         }
 
 
@@ -50,6 +52,11 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
                 .Take(parameter.PageSize).ToListAsync();
             var totalCount = await _mentors.CountAsync();
             return new PagedList<Mentor>(mentorsPage, totalCount, parameter.PageNumber, parameter.PageSize);
+        }
+        public async Task<IEnumerable<Mentor>> GetMentorByIsAvailableAsync(bool isAvailable)
+        {
+            var result = await _mentors.OrderBy(m => m.IsAvaiable.Equals(true)).ToListAsync();
+            return result;
         }
     }
 }

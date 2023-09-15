@@ -8,9 +8,8 @@ namespace CapstoneProject.Domain.Entities
     public class Mentor : BaseEntity
     {
         public string? Organization { get; set; }
-        public MentorshipDuration MentorshipDuration { get; set; }
-        public bool IsAvaiable { get; set; } = false;  //So mentor can update availability
-        public  string? CommunicationChannels { get; set; }
+        public bool IsAvaiable { get; set; } = true;  //So mentor can update availability
+        public  string? CommunicationChannel { get; set; }
         //Navigational property
         public ICollection<Mentee> mentees { get; set; }
         public ICollection<AppointmentSchedule> AppointmentSchedules { get; set; }

@@ -35,7 +35,7 @@ namespace CapstoneProject.WebApi.Controllers
         }
         //PUT api/<MenteeController>
         [HttpPut]
-        public async Task<IActionResult> UpdateMenteeAsync(string id,[FromBody] MenteeRequestDto menteeRequest)
+        public async Task<IActionResult> UpdateMenteeAsync(string id,[FromForm] MenteeRequestDto menteeRequest)
         {
             
             var result = await _menteeService.UpdateMenteeAsync(id, menteeRequest);

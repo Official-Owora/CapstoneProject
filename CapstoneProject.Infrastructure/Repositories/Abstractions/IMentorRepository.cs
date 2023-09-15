@@ -10,5 +10,6 @@ namespace CapstoneProject.Infrastructure.Repositories.Abstractions
         Task<IEnumerable<Mentor>> GetAllMentorsAsync();
         Task<Mentor> GetMentorByIdAsync(string id);
         Task<PagedList<Mentor>> GetMentorByIsAvailableAsync(MentorRequestInputParemeter parameter, bool isAvailable);
+        Task<IEnumerable<Mentor>> GetMentorByIsAvailableAsync(bool isAvailable);
     }
 }

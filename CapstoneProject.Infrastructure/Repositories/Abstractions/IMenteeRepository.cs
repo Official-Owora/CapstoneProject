@@ -9,6 +9,5 @@ namespace CapstoneProject.Infrastructure.Repositories.Abstractions
     {
         Task<IEnumerable<Mentee>> GetAllMenteesAsync();
         Task<Mentee> GetMenteeByIdAsync(string id);
-        Task<PagedList<Mentee>> GetMenteeByIsMatched(MenteeRequestInputParameter parameter, bool IsMatched, ProgrammingLanguage programmingLanguage, TechTrack techTrack);
     }
 }
