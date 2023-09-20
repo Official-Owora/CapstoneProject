@@ -22,6 +22,7 @@ builder.Services.AddAutoMapper(typeof(MapInitializers));
 builder.Services.ResolvingDependencyInjection();
 builder.Services.ConfigureDatabaseContext(builder.Configuration);
 builder.Services.AddAuthentication();
+builder.Services.ConfigureCors();
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.ConfigurePhotoService();

@@ -7,7 +7,9 @@ namespace CapstoneProject.Application.Services.Abstractions
     public interface IAuthenticationService
     {
         Task<StandardResponse<IdentityResult>> RegisterUser(UserRequestDto userRequest);
+       // Task<string> RegisterUser(UserRequestDto userRequest);
         Task<bool> ValidateUser(UserLoginDto userForAuth);
         Task<string> CreateToken();
+        
     }
 }

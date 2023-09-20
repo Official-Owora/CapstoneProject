@@ -1,6 +1,7 @@
 ﻿using CapstoneProject.Infrastructure.Persistence;
 using CapstoneProject.Infrastructure.Repositories.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace CapstoneProject.Infrastructure.Repositories.Implementations
 {
@@ -14,7 +15,7 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
 
         public async Task CreateAsync(T entity) => await _dataContext.AddAsync(entity);
         public void Delete(T entity) => _dataContext.Remove(entity);
-        public void RemoveRange(IEnumerable<T> entities) => _dataContext.RemoveRange(entities);
         public void Update(T entity) => _dataContext.Update(entity);
+
     }
 }

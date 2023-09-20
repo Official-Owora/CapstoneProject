@@ -27,7 +27,7 @@ namespace CapstoneProject.WebApi.Controllers
             return Ok(result);
         }
         //GET BY ID api/<MenteeController>
-        [HttpGet("ById")]
+        [HttpGet("byId")]
         public async Task<IActionResult> GetMenteeByIdAsync(string id)
         {
             var result = await _menteeService.GetMenteeByIdAsync(id);
@@ -42,7 +42,7 @@ namespace CapstoneProject.WebApi.Controllers
             return Ok(result);
         }
         //POST api/<MentorController>
-        [HttpPost("Image/{id}")]
+        [HttpPost("imageById")]
         public IActionResult UploadProfileImageAsync(string id, IFormFile file)
         {
             var result = _menteeService.UploadProfileImageAsync(id, file);

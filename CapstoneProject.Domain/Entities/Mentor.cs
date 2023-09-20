@@ -11,7 +11,7 @@ namespace CapstoneProject.Domain.Entities
         public bool IsAvaiable { get; set; } = true;  //So mentor can update availability
         public  string? CommunicationChannel { get; set; }
         //Navigational property
-        public ICollection<Mentee> mentees { get; set; }
+        public ICollection<Mentee> Mentees { get; set; }
         public ICollection<AppointmentSchedule> AppointmentSchedules { get; set; }
         [Key]
         public string? UserId { get; set; }

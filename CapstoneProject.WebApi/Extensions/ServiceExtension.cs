@@ -30,7 +30,19 @@ namespace CapstoneProject.WebApi.Extensions
             services.AddScoped<IMenteeService, MenteeService>();
             services.AddScoped<IMentorService, MentorService>();
             services.AddScoped<IAppointmentScheduleService, AppointmentScheduleService>();
+            services.AddScoped<IEmailService, EmailService>();
         }
+        public static void ConfigureCors(this IServiceCollection services)
+        {
+            services.AddCors(option =>
+            {
+                option.AddPolicy("CorsPolicy", builder => builder
+                .AllowAnyHeader()
+                .AllowAnyOrigin()
+                .AllowAnyMethod());
+            });
+        }
+
         public static void ConfigureIdentity(this IServiceCollection services)
         {
             var builder = services.AddIdentity<User, IdentityRole>(o =>

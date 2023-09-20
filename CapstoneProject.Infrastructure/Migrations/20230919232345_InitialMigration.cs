@@ -171,7 +171,6 @@ namespace CapstoneProject.Infrastructure.Migrations
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     YearsOfExperience = table.Column<int>(type: "int", nullable: false),
                     TechTrack = table.Column<int>(type: "int", nullable: false),
-                    ProgrammingLanguage = table.Column<int>(type: "int", nullable: false),
                     MentorshipDuration = table.Column<int>(type: "int", nullable: false),
                     ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -215,13 +214,12 @@ namespace CapstoneProject.Infrastructure.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    MentorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    MentorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     YearsOfExperience = table.Column<int>(type: "int", nullable: false),
                     TechTrack = table.Column<int>(type: "int", nullable: false),
-                    ProgrammingLanguage = table.Column<int>(type: "int", nullable: false),
                     MentorshipDuration = table.Column<int>(type: "int", nullable: false),
                     ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -248,8 +246,8 @@ namespace CapstoneProject.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "4ea41a53-e3c2-46b2-a1f6-cdc701cb48c1", null, "Mentor", "MENTOR" },
-                    { "b631f9bf-4456-46b8-a7cb-a6debf43f4ef", null, "Mentee", "MENTEE" }
+                    { "73687cce-fd15-4a90-893e-8cfebbe230ac", null, "Mentor", "MENTOR" },
+                    { "74e0d984-b0a6-414e-8702-b67f7ee13a47", null, "Mentee", "MENTEE" }
                 });
 
             migrationBuilder.CreateIndex(

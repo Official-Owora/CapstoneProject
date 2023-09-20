@@ -22,7 +22,7 @@ namespace CapstoneProject.Infrastructure.Persistence
                 .HasKey(m => new { m.UserId });*/
             modelBuilder.Entity<Mentee>()
                 .HasOne(m=>m.Mentor)
-                .WithMany(m=>m.mentees)
+                .WithMany(m=>m.Mentees)
                 .HasForeignKey(m=>m.MentorId)
                 .OnDelete(DeleteBehavior.NoAction);
 

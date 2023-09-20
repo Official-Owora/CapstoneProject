@@ -10,7 +10,6 @@ namespace CapstoneProject.Domain.Dtos.RequestDto
         public string Bio { get; set; }
         public string UserId { get; set; }  
         public TechTrack TechTrack { get; set; }
-        public ProgrammingLanguage ProgrammingLanguage { get; set; }
         //public string ImageURL { get; set; }
         public YearsOfExperience YearsOfExperience { get; set; }
         public string Organization { get; set; }

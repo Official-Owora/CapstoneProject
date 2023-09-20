@@ -16,12 +16,12 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
         {
             _mentors = dataContext.Set<Mentor>();
         }
-       
+
         public async Task<IEnumerable<Mentor>> GetAllMentorsAsync()
         {
             var mentor = await _mentors.OrderBy(x => x.UserId).ToListAsync();
             return mentor;
-             
+
         }
         public async Task<PagedList<Mentor>> GetAllMentorsAsync(MentorRequestInputParemeter paremeter)
         {
@@ -34,29 +34,28 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
 
         }
 
-
         public async Task<Mentor> GetMentorByIdAsync(string id)
         {
             return await _mentors.Where(m => m.UserId.Equals(id)).FirstOrDefaultAsync();
         }
 
-        public async Task<PagedList<Mentor>> GetMentorByIsAvailableAsync(MentorRequestInputParemeter parameter, bool isAvailable)
-        {
-            IQueryable<Mentor> mentors = _mentors;
-            if (isAvailable)
-            {
-                mentors = _mentors.Where(m => m.IsAvaiable == true);
-            }
-            var mentorsPage = await _mentors
-                .Skip((parameter.PageNumber - 1) * parameter.PageSize)
-                .Take(parameter.PageSize).ToListAsync();
-            var totalCount = await _mentors.CountAsync();
-            return new PagedList<Mentor>(mentorsPage, totalCount, parameter.PageNumber, parameter.PageSize);
-        }
+
         public async Task<IEnumerable<Mentor>> GetMentorByIsAvailableAsync(bool isAvailable)
         {
-            var result = await _mentors.OrderBy(m => m.IsAvaiable.Equals(true)).ToListAsync();
+            var result = await _mentors.Where(m => m.IsAvaiable == true || false).ToListAsync();
             return result;
         }
+        public async Task<IEnumerable<Mentor>> GetMentorByOrganizationAsync(string organization)
+        {
+            var mentor = await _mentors.Where(m => m.Organization == organization).ToListAsync();
+            return mentor;
+        }
+        public async Task<IEnumerable<Mentor>> GetMentorByCommunicationChannelAsync(string communicationChannel)
+        {
+            var mentor = await _mentors.Where(m => m.CommunicationChannel == communicationChannel).ToListAsync();
+            return mentor;
+        }
+             
+       
     }
 }

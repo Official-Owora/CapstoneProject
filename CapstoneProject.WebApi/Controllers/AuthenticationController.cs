@@ -2,6 +2,8 @@
 using CapstoneProject.Domain.Dtos.RequestDto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,7 +13,7 @@ namespace CapstoneProject.WebApi.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly     IAuthenticationService _authenticationService;
+        private readonly IAuthenticationService _authenticationService;
 
         public AuthenticationController(IAuthenticationService authenticationService)
         {
@@ -23,9 +25,17 @@ namespace CapstoneProject.WebApi.Controllers
         public async Task<IActionResult> RegisterUser([FromForm] UserRequestDto requestDto)
         {
             var result = await _authenticationService.RegisterUser(requestDto);
-            return Ok(result);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Data.Errors)
+                {
+                    ModelState.TryAddModelError(error.Code, error.Description);
+                }
+                return BadRequest(new { Message = "User registration failed. Mentor is unavailable" });
+            }
+            return Ok(result);          
         }
-        
+        //[Authorize(Roles ="Mentor")]        
         [HttpPost("login")]
         public async Task<IActionResult> LoginUser([FromBody] UserLoginDto userLogin)
         {
@@ -35,5 +45,7 @@ namespace CapstoneProject.WebApi.Controllers
             }
             return Ok(new { token = await _authenticationService.CreateToken() });
         }
+        
+       
     }
 }

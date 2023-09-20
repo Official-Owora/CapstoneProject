@@ -71,6 +71,7 @@ namespace CapstoneProject.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MentorId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("MentorshipDuration")
@@ -78,9 +79,6 @@ namespace CapstoneProject.Infrastructure.Migrations
 
                     b.Property<DateTime>("ModifiedOn")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("ProgrammingLanguage")
-                        .HasColumnType("int");
 
                     b.Property<int>("TechTrack")
                         .HasColumnType("int");
@@ -129,9 +127,6 @@ namespace CapstoneProject.Infrastructure.Migrations
 
                     b.Property<string>("Organization")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProgrammingLanguage")
-                        .HasColumnType("int");
 
                     b.Property<int>("TechTrack")
                         .HasColumnType("int");
@@ -238,13 +233,13 @@ namespace CapstoneProject.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "b631f9bf-4456-46b8-a7cb-a6debf43f4ef",
+                            Id = "74e0d984-b0a6-414e-8702-b67f7ee13a47",
                             Name = "Mentee",
                             NormalizedName = "MENTEE"
                         },
                         new
                         {
-                            Id = "4ea41a53-e3c2-46b2-a1f6-cdc701cb48c1",
+                            Id = "73687cce-fd15-4a90-893e-8cfebbe230ac",
                             Name = "Mentor",
                             NormalizedName = "MENTOR"
                         });
@@ -370,9 +365,10 @@ namespace CapstoneProject.Infrastructure.Migrations
             modelBuilder.Entity("CapstoneProject.Domain.Entities.Mentee", b =>
                 {
                     b.HasOne("CapstoneProject.Domain.Entities.Mentor", "Mentor")
-                        .WithMany("mentees")
+                        .WithMany("Mentees")
                         .HasForeignKey("MentorId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("CapstoneProject.Domain.Entities.User", "User")
                         .WithOne("Mentee")
@@ -451,7 +447,7 @@ namespace CapstoneProject.Infrastructure.Migrations
                 {
                     b.Navigation("AppointmentSchedules");
 
-                    b.Navigation("mentees");
+                    b.Navigation("Mentees");
                 });
 
             modelBuilder.Entity("CapstoneProject.Domain.Entities.User", b =>

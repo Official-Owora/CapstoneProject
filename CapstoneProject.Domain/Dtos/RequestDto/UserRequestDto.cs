@@ -14,8 +14,6 @@ namespace CapstoneProject.Domain.Dtos.RequestDto
         [Required]
         public TechTrack TechTrack { get; set; }
         [Required]
-        public ProgrammingLanguage ProgrammingLanguage { get; set; }
-        [Required]
         public YearsOfExperience YearsOfExperience { get; set; }
         [Required]
         public MentorshipDuration MentorshipDuration { get; set; }

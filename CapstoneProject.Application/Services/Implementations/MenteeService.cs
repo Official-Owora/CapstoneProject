@@ -84,8 +84,24 @@ namespace CapstoneProject.Application.Services.Implementations
                 _logger.LogError("Mentee does not exist");
                 return StandardResponse<MenteeResponseDto>.Failed("Mentee does not exist");
             }
+            /*var mentors = await _unitOfWork.MentorRepository.GetAllMentorsAsync();
+            Mentor mentor = null;
 
-            var mentee = _mapper.Map<Mentee>(menteeRequest);
+            foreach (var mentorDB in mentors)
+            {
+                if (mentorDB.IsAvaiable == true && mentorDB.YearsOfExperience >= menteeRequest.YearsOfExperience && mentorDB.MentorshipDuration == menteeRequest.MentorshipDuration
+                    && mentorDB.TechTrack == menteeRequest.TechTrack && mentorDB.ProgrammingLanguage == menteeRequest.ProgrammingLanguage && mentor == null)
+                {
+                    mentor = mentorDB;
+                }
+            }
+            //Assigning the MentorId to the MentorId on the Mentee table. Recently added
+            if (mentor != null)
+            {
+                //mentor.Mentees.Add(createMentee);
+                checkMenteeExists.MentorId = mentor.UserId;
+            }*/
+            var mentee = _mapper.Map<Mentee>(menteeRequest);               
             _unitOfWork.MenteeRepository.Update(mentee);
             await _unitOfWork.SaveAsync();
             var menteeUpdated = _mapper.Map<MenteeResponseDto>(mentee);
@@ -108,29 +124,6 @@ namespace CapstoneProject.Application.Services.Implementations
             await _unitOfWork.SaveAsync();
             return StandardResponse<(bool, string)>.Success("Successfully uploaded image", (false, url), 204);
         }
-        /*public async Task<StandardResponse<MenteeResponseDto>> UpdateMenteeAsync(string id, MenteeRequestDto menteeRequest)
-        {
-            *//*var checkMenteeExists = await _unitOfWork.MenteeRepository.GetMenteeByIdAsync(id);
-            if(checkMenteeExists == null)
-            {
-                _logger.LogError("Mentee does not exist");
-                return StandardResponse<MenteeResponseDto>.Failed("Mentee cannot be found");
-            }*//*
-            var mentors = await _unitOfWork.MentorRepository.GetAllMentorsAsync();
-            Mentor mentor = null;
-            foreach (var mentorDB in mentors)
-            {
-                if (mentorDB.TechTrack == menteeRequest.TechTrack && mentorDB.ProgrammingLanguage == menteeRequest.MainProgrammingLanguage && mentor == null)
-                {
-                    mentor=mentorDB;
-                }
-            }
-            var mentee = _mapper.Map<Mentee>(menteeRequest);
-            mentee.MentorId = mentor.UserId;
-            _unitOfWork.MenteeRepository.Update(mentee);
-            await _unitOfWork.SaveAsync();
-            var menteeUpdated = _mapper.Map<MenteeResponseDto>(mentee);
-            return StandardResponse<MenteeResponseDto>.Success($"Successfully updated a mentee with Id: {mentee.UserId}", menteeUpdated, 200);
-        }*/
+        
     }
 }

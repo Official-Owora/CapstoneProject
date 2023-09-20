@@ -31,7 +31,7 @@ namespace CapstoneProject.Application.Services.Implementations
 
         public async Task<StandardResponse<IEnumerable<MentorResponseDto>>> GetAllMentorsAsync(int pageNumber)
         {
-            var parameter = new MenteeRequestInputParameter();
+            var parameter = new MentorRequestInputParemeter();
             parameter.PageNumber = pageNumber;
             parameter.PageSize = 2;
 
@@ -122,19 +122,43 @@ namespace CapstoneProject.Application.Services.Implementations
             await _unitOfWork.SaveAsync();
             return StandardResponse<(bool, string)>.Success("Successfully uploaded image", (true, url), 204);
         }
-        /*public async Task<StandardResponse<MentorResponseDto>> GetMentorByIsAvailableAsync(bool IsAvailable)
+        public async Task<StandardResponse<IEnumerable<MentorResponseDto>>> GetMentorByOrganizationAsync(string organization)
         {
-            var getMentorById = await _unitOfWork.MentorRepository.GetMentorByIdAsync(id);
-            if (getMentorById == null)
+            _logger.LogInformation("Attempting to get list of mentors from database.");
+            var users = await _unitOfWork.MentorRepository.GetMentorByOrganizationAsync(organization);
+            var mapUsers = _mapper.Map<IEnumerable<MentorResponseDto>>(users);
+            _logger.LogInformation("Returning list of mentors in the same organization.");
+            return StandardResponse<IEnumerable<MentorResponseDto>>.Success("successful", mapUsers, 200);
+        }
+        public async Task<StandardResponse<IEnumerable<MentorResponseDto>>> GetMentorByCommunicationChannelAsync(string communicationChannel)
+        {
+            _logger.LogInformation("Attempting to get list of mentors from database.");
+            var users = await _unitOfWork.MentorRepository.GetMentorByCommunicationChannelAsync(communicationChannel);
+            var mapUsers = _mapper.Map<IEnumerable<MentorResponseDto>>(users);
+            _logger.LogInformation("Returning list of mentors with the same communication channel.");
+            return StandardResponse<IEnumerable<MentorResponseDto>>.Success("successful", mapUsers, 200);
+        }
+        public async Task<StandardResponse<IEnumerable<MentorResponseDto>>> GetMentorByIsAvailableAsync(bool isAvailable)
+        {
+            try
             {
-                _logger.LogError("Mentor not found");
-                return StandardResponse<MentorResponseDto>.Failed("Mentor does not exist");
+                var mentors = await _unitOfWork.MentorRepository.GetMentorByIsAvailableAsync(isAvailable);
+
+                if (mentors == null || !mentors.Any())
+                {
+                    return StandardResponse<IEnumerable<MentorResponseDto>>.Failed("No mentors found with the specified availability.");
+                }
+
+                var mentorResponseDtos = _mapper.Map<IEnumerable<MentorResponseDto>>(mentors);
+                return StandardResponse<IEnumerable<MentorResponseDto>>.Success("Mentors retrieved successfully.", mentorResponseDtos, 200);
             }
-            await _unitOfWork.MentorRepository.GetMentorByIdAsync(id);
-            await _unitOfWork.SaveAsync();
-            var mentorToReturn = _mapper.Map<MentorResponseDto>(getMentorById);
-            return StandardResponse<MentorResponseDto>.Success($"Successfully retrieved a mentor with Id: {getMentorById.UserId}", mentorToReturn, 200);
-        }*/
+            catch (Exception ex)
+            {
+                // Handle exceptions, log, and return an error response
+                return StandardResponse<IEnumerable<MentorResponseDto>>.Failed($"An error occurred: {ex.Message}");
+            }
+        }
+       
 
         //Endpoints to be created 
 
@@ -143,5 +167,5 @@ namespace CapstoneProject.Application.Services.Implementations
         //PairMentorWithMentee   ---->
         //Deactivate Account
     }
-    
+
 }
