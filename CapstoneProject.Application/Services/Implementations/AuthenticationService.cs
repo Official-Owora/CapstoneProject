@@ -130,7 +130,7 @@ namespace CapstoneProject.Application.Services.Implementations
                             return new StandardResponse<IdentityResult>
                             {
                                 Succeeded = false,
-                                Message = "Mentee registration failed: No mentor available for assignment."
+                                Message = "Mentee registration failed: No mentor is available to be assigned. Check back next time"
                             };
                         }
                         await _unitOfWork.MenteeRepository.CreateAsync(createMentee);

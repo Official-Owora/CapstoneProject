@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
 
 namespace CapstoneProject.WebApi.Extensions
@@ -85,7 +86,7 @@ namespace CapstoneProject.WebApi.Extensions
         {
             services.AddSwaggerGen(opt =>
             {
-                opt.SwaggerDoc("v1", new OpenApiInfo { Title = "CapstoneProject API", Version = "v1" });
+                opt.SwaggerDoc("v1", new OpenApiInfo { Title = "CapstoneProject API", Version = "v1"});
                 opt.SchemaFilter<EnumSchemaFilter>();
                 opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -96,6 +97,9 @@ namespace CapstoneProject.WebApi.Extensions
                     BearerFormat = "JWT",
                     Scheme = "bearer"
                 });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                opt.IncludeXmlComments(xmlPath);
                 opt.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {

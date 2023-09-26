@@ -1,6 +1,7 @@
 using CapstoneProject.Application.Common;
 using CapstoneProject.Infrastructure.Persistence;
 using CapstoneProject.WebApi.Extensions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Converters;
@@ -27,6 +28,12 @@ builder.Services.ConfigureIdentity();
 builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.ConfigurePhotoService();
 builder.Services.ConfigureSwaggerAuth();
+builder.Services.AddApiVersioning(Options =>
+{
+    Options.AssumeDefaultVersionWhenUnspecified = true;
+    Options.DefaultApiVersion = new ApiVersion(1, 0);
+    Options.ReportApiVersions = true;
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

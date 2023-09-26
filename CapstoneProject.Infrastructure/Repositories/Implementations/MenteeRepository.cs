@@ -20,7 +20,6 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
             return mentee;
         }
 
-
         public async Task<Mentee> GetMenteeByIdAsync(string id)
         {
             return await _mentees.Where(m => m.UserId.Equals(id)).FirstOrDefaultAsync();
