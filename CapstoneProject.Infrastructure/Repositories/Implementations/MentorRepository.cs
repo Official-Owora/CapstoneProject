@@ -5,6 +5,7 @@ using CapstoneProject.Infrastructure.Repositories.Abstractions;
 using CapstoneProject.Shared.RequestParameter.Common;
 using CapstoneProject.Shared.RequestParameter.ModelParameters;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 
 namespace CapstoneProject.Infrastructure.Repositories.Implementations
 {
@@ -25,12 +26,9 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
         }
         public async Task<PagedList<Mentor>> GetAllMentorsAsync(MentorRequestInputParemeter paremeter)
         {
-            var mentors = await _mentors.OrderBy(m => m.UserId)
-                .Skip((paremeter.PageNumber - 1) * paremeter.PageSize)
-                .Take(paremeter.PageSize)
-                .ToListAsync();
-            var count = await _mentors.CountAsync();
-            return new PagedList<Mentor>(mentors, count, paremeter.PageSize, paremeter.PageNumber);
+            var mentors = _mentors.OrderBy(m => m.UserId);
+            return await PagedList<Mentor>.GetPagination(mentors, paremeter.PageNumber, paremeter.PageSize);
+
 
         }
 

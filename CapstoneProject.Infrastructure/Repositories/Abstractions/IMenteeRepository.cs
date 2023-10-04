@@ -7,8 +7,7 @@ namespace CapstoneProject.Infrastructure.Repositories.Abstractions
 {
     public interface IMenteeRepository : IRepositoryBase<Mentee>
     {
-        Task<IEnumerable<Mentee>> GetAllMenteesAsync();
-        //Task<PagedList<Mentee>> GetAllMenteesAsync(MenteeRequestInputParameter parameter);
+        Task<PagedList<Mentee>> GetAllMenteesAsync(MenteeRequestInputParameter parameter);
         Task<Mentee> GetMenteeByIdAsync(string id);
     }
 }

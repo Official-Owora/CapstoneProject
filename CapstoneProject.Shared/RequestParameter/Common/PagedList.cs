@@ -1,4 +1,6 @@
-﻿namespace CapstoneProject.Shared.RequestParameter.Common
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace CapstoneProject.Shared.RequestParameter.Common
 {
     public class PagedList<T> : List<T>
     {
@@ -13,6 +15,14 @@
                 TotalPages = (int)Math.Ceiling(count / (double)pageSize)
             };
             AddRange(items);
+        }
+        public static async Task<PagedList<T>> GetPagination(IQueryable<T> source, int pageNumber, int pageSize)
+        {
+            var count = await source.CountAsync();
+            var items = await source.Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+            return new PagedList<T>(items, count, pageNumber, pageSize);
         }
     }
 }

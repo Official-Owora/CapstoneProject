@@ -1,8 +1,10 @@
 ﻿using CapstoneProject.Application.Services.Abstractions;
 using CapstoneProject.Domain.Dtos.RequestDto;
 using CapstoneProject.Domain.Dtos.ResponseDto;
+using CapstoneProject.Shared.RequestParameter.ModelParameters;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Text.Json;
 
 namespace CapstoneProject.WebApi.Controllers
 {
@@ -44,10 +46,12 @@ namespace CapstoneProject.WebApi.Controllers
         [SwaggerResponse(StatusCodes.Status409Conflict)]
         [SwaggerResponse(StatusCodes.Status500InternalServerError)]
         [SwaggerResponse(StatusCodes.Status503ServiceUnavailable)]
-        public async Task<IActionResult> GetAllMentorsAsync(int pageNumber)
+        public async Task<IActionResult> GetAllMentorsAsync([FromQuery] MentorRequestInputParemeter parameter)
         {
-            var mentors = await _mentorService.GetAllMentorsAsync(pageNumber);
-            return Ok(mentors);
+            var mentors = await _mentorService.GetAllMentorsAsync(parameter);
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(mentors.Data.MetaData));
+            return StatusCode(mentors.StatusCode, mentors);
+ 
         }
         /// <summary>
         /// Description: This endpoint returns a mentor's detail using its Id.

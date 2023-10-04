@@ -5,6 +5,7 @@ using CapstoneProject.Domain.Dtos.ResponseDto;
 using CapstoneProject.Domain.Entities;
 using CapstoneProject.Domain.Enums;
 using CapstoneProject.Infrastructure.RepositoryManager;
+using CapstoneProject.Shared.RequestParameter.Common;
 using CapstoneProject.Shared.RequestParameter.ModelParameters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -29,17 +30,14 @@ namespace CapstoneProject.Application.Services.Implementations
             _photoService = photoService;
         }
 
-        public async Task<StandardResponse<IEnumerable<MentorResponseDto>>> GetAllMentorsAsync(int pageNumber)
+        public async Task<StandardResponse<PagedList<MentorResponseDto>>> GetAllMentorsAsync(MentorRequestInputParemeter paremeter)
         {
-            var parameter = new MentorRequestInputParemeter();
-            parameter.PageNumber = pageNumber;
-            parameter.PageSize = 2;
-
             _logger.LogInformation("Attempting to get list of mentors from database.");
-            var users = await _unitOfWork.MentorRepository.GetAllMentorsAsync();
+            var users = await _unitOfWork.MentorRepository.GetAllMentorsAsync(paremeter);
             var mapUsers = _mapper.Map<IEnumerable<MentorResponseDto>>(users);
             _logger.LogInformation("Returning list of users.");
-            return StandardResponse<IEnumerable<MentorResponseDto>>.Success("successful",mapUsers,200);
+            var pageList = new PagedList<MentorResponseDto>(mapUsers.ToList(), users.MetaData.TotalCount, paremeter.PageNumber, paremeter.PageSize);
+            return StandardResponse<PagedList<MentorResponseDto>>.Success("Successfully retrieved all mentors", pageList, 200);
         }
         public async Task<StandardResponse<IEnumerable<MentorResponseDto>>> GetAllMentorsAsync()
         {

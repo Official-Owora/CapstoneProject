@@ -1,8 +1,11 @@
 ﻿using CapstoneProject.Application.Services.Abstractions;
 using CapstoneProject.Domain.Dtos.RequestDto;
 using CapstoneProject.Domain.Dtos.ResponseDto;
+using CapstoneProject.Domain.Entities;
+using CapstoneProject.Shared.RequestParameter.ModelParameters;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Text.Json;
 
 namespace CapstoneProject.WebApi.Controllers
 {
@@ -42,11 +45,13 @@ namespace CapstoneProject.WebApi.Controllers
         [SwaggerResponse(StatusCodes.Status409Conflict)]
         [SwaggerResponse(StatusCodes.Status500InternalServerError)]
         [SwaggerResponse(StatusCodes.Status503ServiceUnavailable)]
-        public async Task<IActionResult> GetAllAppointmentSchedulesAsync()
+        public async Task<IActionResult> GetAllAppointmentSchedulesAsync([FromQuery] AppointmentScheduleRequestInputParameter parameter)
         {
-            var result = await _appointmentScheduleService.GetAllSchedulesAsync();
-            return Ok(result);
+            var result = await _appointmentScheduleService.GetAllSchedulesAsync(parameter);
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.Data.MetaData));
+            return StatusCode(result.StatusCode, result);
         }
+
         /// <summary>
         /// Description: Gets an appointment schedule using its Id and the mentors Id
         /// </summary>

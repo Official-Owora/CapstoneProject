@@ -8,7 +8,7 @@ namespace CapstoneProject.Application.Services.Abstractions
     public interface IAppointmentScheduleService
     {
         Task<StandardResponse<AppointmentScheduleResponseDto>> CreateAppointmentScheduleAsync(AppointmentScheduleRequestDto appointmentScheduleRequest);
-        Task<StandardResponse<IEnumerable<AppointmentScheduleResponseDto>>> GetAllSchedulesAsync();
+        Task<StandardResponse<PagedList<AppointmentScheduleResponseDto>>> GetAllSchedulesAsync(AppointmentScheduleRequestInputParameter parameter);
         Task<StandardResponse<AppointmentScheduleResponseDto>> GetAppointmentScheduleByIdAsync(string id);
         Task<StandardResponse<AppointmentScheduleResponseDto>> DeleteAppointmentScheduleAsync(string id);
         Task<StandardResponse<AppointmentScheduleResponseDto>> UpdateAppointmentScheduleAsync(string id, AppointmentScheduleRequestDto appointmentScheduleRequest);

@@ -5,9 +5,12 @@ using CapstoneProject.Domain.Dtos.ResponseDto;
 using CapstoneProject.Domain.Entities;
 using CapstoneProject.Domain.Enums;
 using CapstoneProject.Infrastructure.RepositoryManager;
+using CapstoneProject.Shared.RequestParameter.Common;
+using CapstoneProject.Shared.RequestParameter.ModelParameters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using System.Reflection.Metadata;
 
 namespace CapstoneProject.Application.Services.Implementations
 {
@@ -28,13 +31,14 @@ namespace CapstoneProject.Application.Services.Implementations
             _photoService = photoService;
         }
 
-        public async Task<StandardResponse<IEnumerable<MenteeResponseDto>>> GetAllMenteesAsync()
+        public async Task<StandardResponse<PagedList<MenteeResponseDto>>> GetAllMenteesAsync(MenteeRequestInputParameter parameter)
         {
             _logger.LogInformation("Attempting to get list of users from database.");
-            var users = await _unitOfWork.MenteeRepository.GetAllMenteesAsync();
+            var users = await _unitOfWork.MenteeRepository.GetAllMenteesAsync(parameter);
             var mapUsers = _mapper.Map<IEnumerable<MenteeResponseDto>>(users);
             _logger.LogInformation("Returning list of users.");
-            return StandardResponse<IEnumerable<MenteeResponseDto>>.Success("successful", mapUsers, 200);
+            var pageList = new PagedList<MenteeResponseDto>(mapUsers.ToList(), users.MetaData.TotalCount, parameter.PageNumber, parameter.PageSize);
+            return StandardResponse<PagedList<MenteeResponseDto>>.Success("successful", pageList, 200);
         }
         public async Task<StandardResponse<MenteeResponseDto>> GetMenteeByIdAsync(string id)
         {

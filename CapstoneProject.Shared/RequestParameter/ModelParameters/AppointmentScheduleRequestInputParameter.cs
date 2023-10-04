@@ -4,6 +4,6 @@ namespace CapstoneProject.Shared.RequestParameter.ModelParameters
 {
     public class AppointmentScheduleRequestInputParameter : RequestInputParameter
     {
-        public DateTime SearchDate { get; set; }
+        //public DateTime SearchDate { get; set; }
     }
 }

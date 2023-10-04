@@ -6,8 +6,7 @@ namespace CapstoneProject.Infrastructure.Repositories.Abstractions
 {
     public interface IAppointmentScheduleRepository : IRepositoryBase<AppointmentSchedule>
     {
-        Task<PagedList<AppointmentSchedule>> GetAllAppointmentScheduleAsync(AppointmentScheduleRequestInputParameter parameter);
         Task<AppointmentSchedule> GetAppointmentScheduleByIdAsync(string id);
-        Task<IEnumerable<AppointmentSchedule>> GetAllSchedulesAsync();
+        Task<PagedList<AppointmentSchedule>> GetAllSchedulesAsync(AppointmentScheduleRequestInputParameter parameter);
     }
 }

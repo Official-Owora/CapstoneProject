@@ -4,7 +4,10 @@ using CapstoneProject.Domain.Dtos.RequestDto;
 using CapstoneProject.Domain.Dtos.ResponseDto;
 using CapstoneProject.Domain.Entities;
 using CapstoneProject.Infrastructure.RepositoryManager;
+using CapstoneProject.Shared.RequestParameter.Common;
+using CapstoneProject.Shared.RequestParameter.ModelParameters;
 using Microsoft.Extensions.Logging;
+using System.Reflection.Metadata;
 
 namespace CapstoneProject.Application.Services.Implementations
 {
@@ -37,11 +40,14 @@ namespace CapstoneProject.Application.Services.Implementations
             return StandardResponse<AppointmentScheduleResponseDto>.Success($"Successfully created an appointment Schedule", scheduleToReturn, 200);
         }
         
-        public async Task<StandardResponse<IEnumerable<AppointmentScheduleResponseDto>>> GetAllSchedulesAsync()
+        public async Task<StandardResponse<PagedList<AppointmentScheduleResponseDto>>> GetAllSchedulesAsync(AppointmentScheduleRequestInputParameter parameter)
         {
-            var schedule = await _unitOfWork.AppointmentScheduleRepository.GetAllSchedulesAsync();
+            _logger.LogInformation("Attempting to get list of appointment schedules from database.");
+            var schedule = await _unitOfWork.AppointmentScheduleRepository.GetAllSchedulesAsync(parameter);
             var scheduleToReturn = _mapper.Map<IEnumerable<AppointmentScheduleResponseDto>>(schedule);
-            return StandardResponse<IEnumerable<AppointmentScheduleResponseDto>>.Success($"All appointment schedules successfully retrieved", scheduleToReturn, 200);
+            _logger.LogInformation("Returning a list of appointment schedule");
+            var pageList = new PagedList<AppointmentScheduleResponseDto>(scheduleToReturn.ToList(), schedule.MetaData.TotalCount, parameter.PageNumber, parameter.PageSize);
+            return StandardResponse<PagedList<AppointmentScheduleResponseDto>>.Success("Successfully retrieved all appointment schedule", pageList, 200);
         }
 
         public async Task<StandardResponse<AppointmentScheduleResponseDto>> GetAppointmentScheduleByIdAsync(string id)

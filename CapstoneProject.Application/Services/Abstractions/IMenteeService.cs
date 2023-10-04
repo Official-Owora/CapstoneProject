@@ -8,7 +8,7 @@ namespace CapstoneProject.Application.Services.Abstractions
 {
     public interface IMenteeService
     {
-        Task<StandardResponse<IEnumerable<MenteeResponseDto>>> GetAllMenteesAsync();
+        Task<StandardResponse<PagedList<MenteeResponseDto>>> GetAllMenteesAsync(MenteeRequestInputParameter parameter);
         Task<StandardResponse<MenteeResponseDto>> GetMenteeByIdAsync(string id);
         Task<StandardResponse<MenteeResponseDto>> DeleteMenteeAsync(string id);
         Task<StandardResponse<MenteeResponseDto>> UpdateMenteeAsync(string id, MenteeRequestDto menteeRequest);

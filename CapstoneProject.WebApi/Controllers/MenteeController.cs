@@ -1,8 +1,11 @@
 ﻿using CapstoneProject.Application.Services.Abstractions;
 using CapstoneProject.Domain.Dtos.RequestDto;
 using CapstoneProject.Domain.Dtos.ResponseDto;
+using CapstoneProject.Domain.Entities;
+using CapstoneProject.Shared.RequestParameter.ModelParameters;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Text.Json;
 
 namespace CapstoneProject.WebApi.Controllers
 {
@@ -26,10 +29,11 @@ namespace CapstoneProject.WebApi.Controllers
         [SwaggerResponse(StatusCodes.Status409Conflict)]
         [SwaggerResponse(StatusCodes.Status500InternalServerError)]
         [SwaggerResponse(StatusCodes.Status503ServiceUnavailable)]
-        public async Task<IActionResult> GetAllMenteesAsync()
+        public async Task<IActionResult> GetAllMenteesAsync([FromQuery] MenteeRequestInputParameter parameter)
         {
-            var result = await _menteeService.GetAllMenteesAsync();
-            return Ok(result);
+            var result = await _menteeService.GetAllMenteesAsync(parameter);
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.Data.MetaData));
+            return StatusCode(result.StatusCode, result);
         }
         /// <summary>
         /// Description: This endpoint returns a mentee's detail using its Id.
