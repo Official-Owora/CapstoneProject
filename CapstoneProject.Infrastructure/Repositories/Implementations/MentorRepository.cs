@@ -1,11 +1,9 @@
 ﻿using CapstoneProject.Domain.Entities;
-using CapstoneProject.Domain.Enums;
 using CapstoneProject.Infrastructure.Persistence;
 using CapstoneProject.Infrastructure.Repositories.Abstractions;
 using CapstoneProject.Shared.RequestParameter.Common;
 using CapstoneProject.Shared.RequestParameter.ModelParameters;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata;
 
 namespace CapstoneProject.Infrastructure.Repositories.Implementations
 {
@@ -24,19 +22,17 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
             return mentor;
 
         }
+
         public async Task<PagedList<Mentor>> GetAllMentorsAsync(MentorRequestInputParemeter paremeter)
         {
             var mentors = _mentors.OrderBy(m => m.UserId);
-            return await PagedList<Mentor>.GetPagination(mentors, paremeter.PageNumber, paremeter.PageSize);
-
-
+            return await PagedList<Mentor>.GetPagination(mentors, paremeter.PageSize, paremeter.PageNumber);
         }
 
         public async Task<Mentor> GetMentorByIdAsync(string id)
         {
             return await _mentors.Where(m => m.UserId.Equals(id)).FirstOrDefaultAsync();
         }
-
 
         public async Task<IEnumerable<Mentor>> GetMentorByIsAvailableAsync(bool isAvailable)
         {
@@ -48,12 +44,12 @@ namespace CapstoneProject.Infrastructure.Repositories.Implementations
             var mentor = await _mentors.Where(m => m.Organization == organization).ToListAsync();
             return mentor;
         }
+
         public async Task<IEnumerable<Mentor>> GetMentorByCommunicationChannelAsync(string communicationChannel)
         {
             var mentor = await _mentors.Where(m => m.CommunicationChannel == communicationChannel).ToListAsync();
             return mentor;
-        }
-             
+        }            
        
     }
 }

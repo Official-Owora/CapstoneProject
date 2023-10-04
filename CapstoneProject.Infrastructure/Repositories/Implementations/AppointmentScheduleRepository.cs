@@ -4,7 +4,6 @@ using CapstoneProject.Infrastructure.Repositories.Abstractions;
 using CapstoneProject.Shared.RequestParameter.Common;
 using CapstoneProject.Shared.RequestParameter.ModelParameters;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata;
 
 namespace CapstoneProject.Infrastructure.Repositories.Implementations
 {
